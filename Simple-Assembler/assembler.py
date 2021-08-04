@@ -14,4 +14,4 @@ def main():
 
 main()
 var=dict()
-lab=dict
+lab=dict()

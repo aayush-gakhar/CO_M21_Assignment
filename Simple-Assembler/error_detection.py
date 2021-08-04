@@ -6,28 +6,35 @@ def check(code):
 
 
 def typo(code):
+    var_flag=True
     for line in code:
         line = line.split()
         if not line:
             continue
-        elif line[0] == 'var':
+        elif line[0] == 'var' and not var_flag:
+            'VarInMidError'
+        elif var_flag and line[0] == 'var':
             return variable_check(line)
         elif line[0][-1] == ':':
+            var_flag=False
             return label_check(line) and instruction_check(line[1:])
         elif line[0] in Instructions:
+            var_flag=False
             return instruction_check(line)
+        else:
+            'NameError'
 
 
 def variable_check(line):
-    pass
+    'VariableError'
 
 
 def instruction_check(line):
-    pass
+    'NameError'
 
 
 def label_check(line):
-    pass
+    'LabelError'
 
 
 def halt_check(code):
