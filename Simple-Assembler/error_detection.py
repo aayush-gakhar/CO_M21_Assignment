@@ -2,7 +2,8 @@ import sys
 
 
 def check(code):
-    return halt_check(code) and typo(code)
+    # return True if error in code !!!
+    return halt_check(code) or typo(code)
 
 
 def typo(code):
@@ -43,12 +44,12 @@ def halt_check(code):
         f = [i for i in code].index('hlt')
         if f != len(code) - 1:
             raise_error(8,f)
-            return False
-        else:
             return True
+        else:
+            return False
     except:
-        sys.stdout.write('MissingHltError')
-        return False
+        raise_error(7,len(code-1))
+        return True
 
 
 def raise_error(error, line_no):
