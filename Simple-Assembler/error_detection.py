@@ -28,7 +28,7 @@ def iterate(code):
 
 
 def variable_check(line, line_no):
-    return len(line) == 2 and all(i in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in line[1].lower())
+    return len(line) != 2 or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in line[1].lower()) or line[1] in var or var.add(line[1])
 
 
 def instruction_check(line, line_no):
@@ -43,20 +43,20 @@ def label_check(line, line_no):
 
 def halt_check(code):
     try:
-        f = [i for i in code].index('hlt')
+        f = list(code).index('hlt')
         if f != len(code) - 1:
             raise_error(8, f)
             return True
         else:
             return False
     except ValueError:
-        raise_error(7, len(code - 1))
+        raise_error(7, len(list(code))-1)
         return True
 
 
 def raise_error(error, line_no):
     error_flag = True
-    sys.stdout.write(errors[error] + ' Line: ' + line_no)
+    sys.stdout.write(errors[error] + ' Line: ' + str(line_no)+'\n')
 
 
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
@@ -64,3 +64,4 @@ Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor'
 error_flag = False
 errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateError', 'MisuseError', 'VarInMidError',
           'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError']
+var=set()

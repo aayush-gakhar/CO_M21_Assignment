@@ -14,7 +14,7 @@ def main():
         except:
             # shrishti apna path idher likh le
             pass
-    print([i for i in code])
+    print(list(code))
     if error_detection.check(code):
         print('error')
     compiler.compile(code)
