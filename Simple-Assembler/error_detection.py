@@ -6,7 +6,7 @@ def check(code):
 
 
 def typo(code):
-    var_flag=True
+    var_flag = True
     for line in code:
         line = line.split()
         if not line:
@@ -16,13 +16,14 @@ def typo(code):
         elif var_flag and line[0] == 'var':
             return variable_check(line)
         elif line[0][-1] == ':':
-            var_flag=False
+            var_flag = False
             return label_check(line) and instruction_check(line[1:])
         elif line[0] in Instructions:
-            var_flag=False
+            var_flag = False
             return instruction_check(line)
         else:
-            'NameError'
+            sys.stdout.write('NameError')
+            return False
 
 
 def variable_check(line):
@@ -38,13 +39,16 @@ def label_check(line):
 
 
 def halt_check(code):
-    f = code.find('hlt')
-    if f==-1:
-        'MissingHltError'
-    elif f!=len(code)-1:
-        'HltInMidError'
-    else:
-        return True
+    try:
+        f = [i for i in code].index('hlt')
+        if f != len(code) - 1:
+            raise_error(8,f)
+            return False
+        else:
+            return True
+    except:
+        sys.stdout.write('MissingHltError')
+        return False
 
 
 def raise_error(error, line_no):
