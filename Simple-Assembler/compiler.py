@@ -2,7 +2,7 @@ import sys
 
 
 def compile(code):
-    int i = 0
+    i = 0
     for line in code:
         line=line.split()
         if not line:
@@ -13,7 +13,7 @@ def compile(code):
             compile_instruction(line)
         elif line[0][-1] == ':':
             compile_label(line,i)
-        i++;
+        i+=1
 
 
 
@@ -23,7 +23,7 @@ def compile_variable(line):
 
 
 def compile_label(line , i):
-    thisdict[line[0][:-1] = i
+    label_dict[line[0][:-1]] = i
     pass
 
 
