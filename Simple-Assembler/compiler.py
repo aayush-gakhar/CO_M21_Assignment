@@ -44,12 +44,6 @@ def compile_instruction(line):
         sys.stdout.write(opcode + 2 * '0' + reg1 + reg2 + reg3)
         sys.stdout.write('\n')
 
-        if (Reg[int(line[2][1])][2] - Reg[int(line[3][1])][2]<0):
-            Reg[int(line[1][1])][2] = 0
-            FLAGS[0][1]=1
-        elif(Reg[int(line[2][1])][2] - Reg[int(line[3][1])][2]>=0):
-            Reg[int(line[1][1])][2] = Reg[int(line[2][1])][2] - Reg[int(line[3][1])][2]
-
     elif line[0] in ['div','not','cmp',]:
 
         opcode = Instructions[line[0]]
@@ -61,7 +55,7 @@ def compile_instruction(line):
 
 
     elif line[0] in ['ld','st',]:
-        oopcode = Instructions[line[0]]
+        opcode = Instructions[line[0]]
 
     elif line[0] in ['jlt','jgt','jmp','je']:
         opcode = Instructions[line[0]]
@@ -74,11 +68,11 @@ def compile_instruction(line):
 
     elif line[0] == 'mov':
         opcode = Instructions[line[0]]
-        sys.stdout.write(opcode+11*'0')
+        sys.stdout.write()
         sys.stdout.write('\n')
 
 
-Instructions = {'add':'00000', 'sub':'00001', 'mov':'0001', 'ld':'00100','st':'00101', 'mul':'00110', 'div':'00111', 'rs':'01000', 'ls':'01001', 'xor':'01010', 'or':'01011', 'and':'01100', 'not':'01101', 'cmp':'01110', 'jmp':'01111',
+Instructions = {'add':'00000', 'sub':'00001', 'mov':'00010', 'ld':'00100','st':'00101', 'mul':'00110', 'div':'00111', 'rs':'01000', 'ls':'01001', 'xor':'01010', 'or':'01011', 'and':'01100', 'not':'01101', 'cmp':'01110', 'jmp':'01111',
                 'jlt':'10000', 'jgt':'10001', 'je':'10010', 'hlt':'10011'}
 
 Reg = {'R0':'000', 'R1':'001', 'R2': '010', 'R3': '011', 'R4': '100', 'R5': '101',
