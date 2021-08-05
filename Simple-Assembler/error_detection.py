@@ -3,6 +3,7 @@ import sys
 
 def check(code):
     # return True if error in code !!!
+
     return halt_check(code) or iterate(code)
 
 
@@ -53,20 +54,16 @@ def label_check(line, line_no):
 
 
 def halt_check(code):
-    try:
-        code = [i for i in code if i]
-        print(code)
-        f = code.index('hlt\n')
-        if f != len(code) - 1:
-            raise_error(8, f)
+    # b = ['hlt' in i for i in code if i]
+    for l,i in enumerate(code[:-1],1):
+        if 'hlt' in i:
+            raise_error(8, l)
             return True
-        else:
-            return False
-    except ValueError:
-        if code[-1]=='hlt':
-            return False
+    if not b[-1]:
         raise_error(7, len(code) - 1)
         return True
+    return False
+
 
 
 def raise_error(error, line_no):
