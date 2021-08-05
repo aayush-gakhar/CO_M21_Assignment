@@ -77,6 +77,13 @@ def compile_instruction(line):
 
     elif line.split()[0] == 'mul':
         opcode = '00110'
+        reg1 = Reg[int(line.split()[1][1])][1]
+        reg2 = Reg[int(line.split()[2][1])][1]
+        reg3 = Reg[int(line.split()[3][1])][1]
+        sys.stdout.write(opcode + 2 * '0' + reg1 + reg2 + reg3)
+        sys.stdout.write('\n')
+
+        Reg[int(line.split()[1][1])][2] = Reg[int(line.split()[2][1])][2] * Reg[int(line.split()[3][1])][2]
 
     elif line.split()[0] == 'div':
         opcode = '00111'
