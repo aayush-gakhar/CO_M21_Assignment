@@ -23,7 +23,6 @@ def compile_label(line,i):
 
 def compile_instruction(line):
 
-
     if line[0] in ['add','sub','mul','xor','or','and']:
         opcode = Instructions[line[0]]
         reg1 = Reg[line[1]]
@@ -36,36 +35,23 @@ def compile_instruction(line):
 
     elif line[0] in ['rs','ls']:
         opcode = Instructions[line[0]]
-        reg1 = Reg[line[1]]
-        reg2 = Reg[line[2]]
-        reg3 = Reg[line[3]]
-        sys.stdout.write(opcode + 2 * '0' + reg1)
+        imm = str(bin(int(line[2][1:])).replace("0b", ""))
+        un = 8 - len(imm)
+        sys.stdout.write(opcode + Reg[line[1]] + un * '0' + imm)
         sys.stdout.write('\n')
 
     elif line[0] in ['div','not','cmp']:
 
         opcode = Instructions[line[0]]
-        reg1 = Reg[int(line[1][1])][1]
-        reg2 = Reg[int(line[2][1])][1]
-        un=5
-        sys.stdout.write(opcode + un*'0'+ reg1 + reg2)
+        sys.stdout.write(opcode + 5 * '0' + Reg[line[1]] + Reg[line[2]])
         sys.stdout.write('\n')
 
 
-    elif line[0] in ['ld','st',]:
+    elif line[0] in ['ld','st']:
         opcode = Instructions[line[0]]
-        reg1 = Reg[int(line[1][1])][1]
-        mem_addr = bin(variables.index(line[2][1])-len(variables))
-        un = 3
-        sys.stdout.write(opcode + un*'0'+ reg1 + mem_addr)
-        sys.stdout.write('\n')
 
     elif line[0] in ['jlt','jgt','jmp','je']:
         opcode = Instructions[line[0]]
-        addr = bin(labels[line[2]])
-        un = 3
-        sys.stdout.write(opcode + un*'0'+ addr)
-        sys.stdout.write('\n')
 
 
     elif line[0] == 'hlt':
@@ -76,10 +62,15 @@ def compile_instruction(line):
     elif line[0] == 'mov':
         if line[2][0]=='$':
             opcode = '00010'
-            imm=line[2][1:]
+            imm=str(bin(int(line[2][1:])).replace("0b",""))
+            un=8-len(imm)
+            sys.stdout.write(opcode+Reg[line[1]]+un*'0'+imm)
+            sys.stdout.write('\n')
+        else:
+            opcode='00011'
+            sys.stdout.write(opcode+5*'0'+Reg[line[1]]+Reg[line[2]])
+            sys.stdout.write('\n')
 
-        #sys.stdout.write()
-        #sys.stdout.write('\n')
 
 variables = {}
 labels={}
