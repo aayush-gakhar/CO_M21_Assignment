@@ -24,8 +24,8 @@ def main():
     print(labels)
     if has_error:
         print('error')
-    # else:
-    #     compiler.compile(code)
+    else:
+        compiler.compile_(code)
 
 
 main()
