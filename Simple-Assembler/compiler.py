@@ -41,6 +41,14 @@ def compile_instruction(line):
             Reg[int(line.split()[1][1])][2]=int(line.split()[2][1:])  #values
         else:
             opcode='00011'
+            reg1 = Reg[int(line.split()[1][1])][1]
+            reg2 = Reg[int(line.split()[2][1])][1]
+            un=5
+            sys.stdout.write(opcode + un*'0'+ reg1 + reg2)
+            sys.stdout.write('\n')
+
+            Reg[int(line.split()[1][1])][2] = Reg[int(line.split()[2][1])][2]  # values
+
 
     elif line.split()[0] == 'ld':
         opcode = '00100'
