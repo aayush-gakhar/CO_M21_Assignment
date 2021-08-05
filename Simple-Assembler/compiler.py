@@ -5,7 +5,6 @@ def compile(code):
     int i = 0
     global code_length = len(code)
     for line in code:
-        line=line.split()
         if not line:
             continue
         elif line[0] == 'var':
@@ -13,8 +12,7 @@ def compile(code):
         elif line[0] in Instructions:
             compile_instruction(line)
         elif line[0][-1] == ':':
-            compile_label(line,i)
-        i++;
+            compile_label(line)
 
 
 
@@ -45,8 +43,8 @@ def compile_instruction(line):
         sys.stdout.write(opcode + 2 * '0' + reg1 + reg2 + reg3)
         sys.stdout.write('\n')
 
+    elif line[0] in ['div','not','cmp']:
 
-    elif line[0] in ['div','not','cmp',]:
         opcode = Instructions[line[0]]
         reg1 = Reg[int(line[1][1])][1]
         reg2 = Reg[int(line[2][1])][1]
@@ -71,16 +69,15 @@ def compile_instruction(line):
         sys.stdout.write('\n')
 
 
-
     elif line[0] == 'hlt':
         opcode = Instructions[line[0]]
         sys.stdout.write(opcode+11*'0')
         sys.stdout.write('\n')
 
-    elif line[0] == 'mov':
-        opcode = Instructions[line[0]]
-        sys.stdout.write()
-        sys.stdout.write('\n')
+    #elif line[0] == 'mov':
+       # opcode = Instructions[line[0]]
+        #sys.stdout.write()
+        #sys.stdout.write('\n')
 
 variables = []
 label_dict={}

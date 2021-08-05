@@ -10,7 +10,6 @@ def check(code):
 def iterate(code):
     var_flag = True
     for line_no, line in enumerate(code, start=1):
-        line = line.split()
         if not line:
             continue
         elif line[0] == 'var':
@@ -80,6 +79,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
     elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:
+        print(line)
         if len(line == 2) and line[1] in labels:
             return False
         else:
@@ -117,10 +117,10 @@ def label_check(line, line_no):
 def halt_check(code):
     x = len(code) - 1
     while x >= 0:
-        if code[x] == '':
+        if not code[x]:
             code.pop(x)
             x -= 1
-        elif code[x] == 'hlt':
+        elif code[x] == ['hlt']:
             break
         else:
             raise_error(7, x)
