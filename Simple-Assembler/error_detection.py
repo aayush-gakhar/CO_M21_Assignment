@@ -80,6 +80,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
     elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:
+        print(line)
         if len(line == 2) and line[1] in labels:
             return False
         else:

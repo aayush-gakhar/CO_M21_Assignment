@@ -1,6 +1,8 @@
 import sys
+import re
 import error_detection
 import compiler
+
 
 
 def main():
@@ -19,7 +21,8 @@ def main():
             # shrishti apna path idher likh le
             pass
     print(code)
-    has_error, var, labels=error_detection.check(code)
+    has_error, var, labels = error_detection.check(code)
+    print(labels)
     if has_error:
         print('error')
     else:
