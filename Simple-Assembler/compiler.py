@@ -44,7 +44,7 @@ def compile_instruction(line):
         sys.stdout.write(opcode + 2 * '0' + reg1 + reg2 + reg3)
         sys.stdout.write('\n')
 
-<<<<<<< HEAD
+# <<<<<<< HEAD
         Reg[int(line.split()[1][1])][2] = Reg[int(line.split()[2][1])][2] * Reg[int(line.split()[3][1])][2]
 
     elif line.split()[0] == 'div':
@@ -72,9 +72,9 @@ def compile_instruction(line):
         sys.stdout.write(opcode + reg + un * '0' + imm)
         sys.stdout.write('\n')
         Reg[int(line.split()[1][1])][2]=int(line.split()[2][1:])  #inputting the value to that register
-=======
+# =======
     elif line[0] in ['div','not','cmp',]:
->>>>>>> 7ff1506046bbc3a56a6604e8a6af1f9657fef699
+# >>>>>>> 7ff1506046bbc3a56a6604e8a6af1f9657fef699
 
         opcode = Instructions[line[0]]
         reg1 = Reg[int(line[1][1])][1]
