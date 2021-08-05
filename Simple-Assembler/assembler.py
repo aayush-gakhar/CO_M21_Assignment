@@ -4,13 +4,15 @@ import compiler
 
 
 def main():
-    # code = sys.stdin.readlines()
+    # code = list(map(str.strip,sys.stdin.readlines()))
     try:
-        code = open('/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
-                    '/test3').readlines()
+        # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
+        #             '/test1'
+        path='/Users/aayushgakhar/Desktop/test4'
+        code = list(map(str.strip,open(path).readlines()))
     except:
         try:
-            code = open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test1')
+            code = list(map(str.strip,open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test1')))
         except:
             # shrishti apna path idher likh le
             pass
@@ -19,6 +21,7 @@ def main():
         print('error')
     else:
         compiler.compile(code)
+    print(code)
 
 
 main()

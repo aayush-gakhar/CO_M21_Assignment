@@ -41,6 +41,53 @@ def instruction_check(line, line_no):
     if line[0] not in Instructions:
         raise_error(0, line_no)
         return False
+    if line[0]=='add':
+        if len(line==4) and all(i in reg for i in line[1:]):
+            return False
+        else:
+            raise_error(9,line_no)
+            return True
+    elif line[0]=='sub':
+        if len(line==4) and all(i in reg for i in line[1:]):
+            return False
+        else:
+            raise_error(9,line_no)
+            return True
+    elif line[0]=='mov':
+        pass
+    elif line[0]=='ld':
+        pass
+    elif line[0]=='st':
+        pass
+    elif line[0]=='mul':
+        pass
+    elif line[0]=='div':
+        pass
+    elif line[0]=='rs':
+        pass
+    elif line[0]=='ls':
+        pass
+    elif line[0]=='xor':
+        pass
+    elif line[0]=='or':
+        pass
+    elif line[0]=='and':
+        pass
+    elif line[0]=='not':
+        pass
+    elif line[0]=='cmp':
+        pass
+    elif line[0]=='jmp':
+        pass
+    elif line[0]=='jlt':
+        pass
+    elif line[0]=='jgt':
+        pass
+    elif line[0]=='je':
+        pass
+    elif line=='hlt':
+        return False
+
 
 
 def label_check(line, line_no):
@@ -54,15 +101,24 @@ def label_check(line, line_no):
 
 
 def halt_check(code):
-    # b = ['hlt' in i for i in code if i]
+    x=len(code)-1
+    while(x>=0):
+        if code[x]=='':
+            code.pop(x)
+            x-=1
+        elif code[x]=='hlt':
+            break
+        else:
+            raise_error(7,x)
+            return True
+    if(x==-1):
+        raise_error(7, 0)
+        return True
     for l,i in enumerate(code[:-1],1):
-        if 'hlt' in i:
+        if i == 'hlt':
             raise_error(8, l)
             return True
-    if not b[-1]:
-        raise_error(7, len(code) - 1)
-        return True
-    return False
+    return not code[-x] == 'hlt'
 
 
 
@@ -76,5 +132,6 @@ Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor'
 error_flag = False
 errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateError', 'MisuseError', 'VarInMidError',
           'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError']
+reg=['R0','R1','R2','R3','R4','R5','R6']
 var = set()
 labels = set()
