@@ -23,7 +23,6 @@ def main():
         print('error')
     else:
         compiler.compile(code)
-    print(code)
 
 
 main()

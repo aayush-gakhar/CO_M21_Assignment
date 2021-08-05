@@ -24,6 +24,7 @@ def compile_label(line):
 
 def compile_instruction(line):
 
+
     if line.split()[0] == 'add':
         opcode = '00000'
         reg1 = Reg[int(line.split()[1][1])][1]
@@ -128,6 +129,8 @@ def compile_instruction(line):
         sys.stdout.write(opcode+11*'0')
         sys.stdout.write('\n')
 
+    FLAGS=()
+
 
 
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
@@ -136,4 +139,5 @@ Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor'
 Reg = [['R0', '000',0], ['R1', '001',0], ['R2', '010',0], ['R3', '011',0], ['R4', '100',0], ['R5', '101',0],
        ['R6', '110',0]]
 
-FLAGS=[['V',0],['L',0],['G',0],['E',0]]
+flags=[['V',0],['L',0],['G',0],['E',0]]
+
