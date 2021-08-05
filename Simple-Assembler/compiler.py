@@ -92,12 +92,29 @@ def compile_instruction(line):
 
     elif line.split()[0] == 'div':
         opcode = '00111'
+        reg1 = Reg[int(line.split()[1][1])][1]
+        reg2 = Reg[int(line.split()[2][1])][1]
+        sys.stdout.write(opcode + 5 * '0' + reg1 + reg2)
+        sys.stdout.write('\n')
+
 
     elif line.split()[0] == 'rs':
         opcode = '01000'
+        imm = str(bin(int(line.split()[2][1:]))[2:])
+        reg1=Reg[int(line.split()[1][1])][1]
+        un=(8-len(imm))
+        sys.stdout.write(opcode + reg + un * '0' + imm)
+        sys.stdout.write('\n')
+        Reg[int(line.split()[1][1])][2]=int(line.split()[2][1:])  #inputting the value to that register
 
     elif line.split()[0] == 'ls':
         opcode = '01001'
+        imm = str(bin(int(line.split()[2][1:]))[2:])
+        reg1=Reg[int(line.split()[1][1])][1]
+        un=(8-len(imm))
+        sys.stdout.write(opcode + reg + un * '0' + imm)
+        sys.stdout.write('\n')
+        Reg[int(line.split()[1][1])][2]=int(line.split()[2][1:])  #inputting the value to that register
 
     elif line.split()[0] == 'xor':
         opcode = '01010'
