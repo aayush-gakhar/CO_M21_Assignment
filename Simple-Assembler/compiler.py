@@ -3,7 +3,6 @@ import sys
 
 def compile(code):
     for line in code:
-        line=line.split()
         if not line:
             continue
         elif line[0] == 'var':

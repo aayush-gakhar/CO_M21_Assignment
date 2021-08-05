@@ -10,7 +10,6 @@ def check(code):
 def iterate(code):
     var_flag = True
     for line_no, line in enumerate(code, start=1):
-        line = line.split()
         if not line:
             continue
         elif line[0] == 'var':

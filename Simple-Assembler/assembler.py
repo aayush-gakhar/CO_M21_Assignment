@@ -1,5 +1,4 @@
 import sys
-import re
 import error_detection
 import compiler
 
@@ -13,10 +12,10 @@ def main():
         # path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test2'
 
         path='/Users/aayushgakhar/Desktop/test4'
-        code = list(map(str.strip,open(path).readlines()))
+        code = [i.strip().split() for i in open(path).readlines()]
     except:
         try:
-            code = list(map(str.strip,open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test5').readlines()))
+            code = [i.strip().split() for i in open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test5').readlines()]
         except:
             # shrishti apna path idher likh le
             pass
