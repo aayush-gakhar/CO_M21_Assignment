@@ -26,11 +26,11 @@ def compile_label(line):
 def compile_instruction(line):
 
 
-    if line[0] in ['add','sub','mul','xor','or','and',]:
+    if line[0] in ['add','sub','mul','xor','or','and']:
         opcode = Instructions[line[0]]
-        reg1 = Reg[int(line[1][1])][1]
-        reg2 = Reg[int(line[2][1])][1]
-        reg3 = Reg[int(line[3][1])][1]
+        reg1 = Reg[line[1]]
+        reg2 = Reg[line[2]]
+        reg3 = Reg[line[3]]
         sys.stdout.write(opcode+2*'0'+reg1+reg2+reg3)
         sys.stdout.write('\n')
 
@@ -38,10 +38,10 @@ def compile_instruction(line):
 
     elif line[0] in ['rs','ls']:
         opcode = Instructions[line[0]]
-        reg1 = Reg[int(line[1][1])][1]
-        reg2 = Reg[int(line[2][1])][1]
-        reg3 = Reg[int(line[3][1])][1]
-        sys.stdout.write(opcode + 2 * '0' + reg1 + reg2 + reg3)
+        reg1 = Reg[line[1]]
+        reg2 = Reg[line[2]]
+        reg3 = Reg[line[3]]
+        sys.stdout.write(opcode + 2 * '0' + reg1)
         sys.stdout.write('\n')
 
     elif line[0] in ['div','not','cmp']:
@@ -66,8 +66,11 @@ def compile_instruction(line):
         sys.stdout.write(opcode+11*'0')
         sys.stdout.write('\n')
 
-    #elif line[0] == 'mov':
-       # opcode = Instructions[line[0]]
+    elif line[0] == 'mov':
+        if line[2][0]=='$':
+            opcode = '00010'
+            imm=line[2][1:]
+
         #sys.stdout.write()
         #sys.stdout.write('\n')
 
