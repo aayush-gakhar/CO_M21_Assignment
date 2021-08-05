@@ -9,7 +9,7 @@ def main():
         # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
         #             '/test1'
         # '/Users/aayushgakhar/Desktop/test4'
-        path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test1'
+        path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test5'
         code = list(map(str.strip,open(path).readlines()))
     except:
         try:
@@ -18,7 +18,8 @@ def main():
             # shrishti apna path idher likh le
             pass
     print(code)
-    if error_detection.check(code):
+    has_error, var, labels=error_detection.check(code)
+    if has_error:
         print('error')
     else:
         compiler.compile(code)

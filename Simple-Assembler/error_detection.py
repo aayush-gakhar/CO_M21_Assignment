@@ -4,7 +4,7 @@ import sys
 def check(code):
     # return True if error in code !!!
 
-    return halt_check(code) or iterate(code)
+    return halt_check(code) or iterate(code),var,labels
 
 
 def iterate(code):
