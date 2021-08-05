@@ -13,10 +13,12 @@ def iterate(code):
         line = line.split()
         if not line:
             continue
-        elif line[0] == 'var' and not var_flag:
-            'VarInMidError'
-        elif var_flag and line[0] == 'var':
-            return variable_check(line, line_no)
+        elif line[0] == 'var':
+            if var_flag:
+                return variable_check(line, line_no)
+            else:
+                raise_error(6, line_no)
+                return True
         elif line[0][-1] == ':':
             var_flag = False
             return label_check(line, line_no) and instruction_check(line[1:], line_no)
@@ -25,7 +27,7 @@ def iterate(code):
             return instruction_check(line, line_no)
         else:
             raise_error(0, line_no)
-            return False
+            return True
 
 
 def variable_check(line, line_no):
@@ -41,62 +43,62 @@ def instruction_check(line, line_no):
     if line[0] not in Instructions:
         raise_error(0, line_no)
         return False
-    if line[0]=='add':
-        if len(line==4) and all(i in reg for i in line[1:]):
+    if line[0] in ['add', 'sub', 'mul']:
+        if len(line)==4 and all(i in reg for i in line[1:]):
             return False
         else:
-            raise_error(9,line_no)
+            raise_error(9, line_no)
             return True
-    elif line[0]=='sub':
-        if len(line==4) and all(i in reg for i in line[1:]):
+    elif line[0] == 'mov':
+        if len(line) == 3 and line[1] in reg and (line[2] in reg or immediate_check(line[2],line_no)):
             return False
         else:
-            raise_error(9,line_no)
+            raise_error(9, line_no)
             return True
-    elif line[0]=='mov':
-        pass
-    elif line[0]=='ld':
-        pass
-    elif line[0]=='st':
-        pass
-    elif line[0]=='mul':
-        pass
-    elif line[0]=='div':
-        pass
-    elif line[0]=='rs':
-        pass
-    elif line[0]=='ls':
-        pass
-    elif line[0]=='xor':
-        pass
-    elif line[0]=='or':
-        pass
-    elif line[0]=='and':
-        pass
-    elif line[0]=='not':
-        pass
-    elif line[0]=='cmp':
-        pass
-    elif line[0]=='jmp':
-        pass
-    elif line[0]=='jlt':
-        pass
-    elif line[0]=='jgt':
-        pass
-    elif line[0]=='je':
-        pass
-    elif line=='hlt':
+    elif line[0] in ['ld', 'st']:
+        if len(line) == 3 and line[1] in reg and line[2] in var:
+            return False
+        else:
+            raise_error(9, line_no)
+            return True
+    elif line[0] in ['rs', 'ls']:
+        if len(line) == 3 and line[1] in reg and immediate_check(line[2],line_no):
+            return False
+        else:
+            raise_error(9, line_no)
+            return True
+    elif line[0] in ['xor', 'or', 'and']:
+        if len(line == 4) and all(i in reg for i in line[1:]):
+            return False
+        else:
+            raise_error(9, line_no)
+            return True
+    elif line[0] in ['div', 'not', 'cmp']:
+        if len(line == 3) and all(i in reg for i in line[1:]):
+            return False
+        else:
+            raise_error(9, line_no)
+            return True
+    elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:
+        if len(line == 2) and line[1] in labels:
+            return False
+        else:
+            raise_error(9, line_no)
+            return True
+    elif line == 'hlt':
         return False
 
+# def reg_check(reg,line_no):
 
-def immediate_check(imm,line_no):
-    if imm[0]=='$':
+
+
+def immediate_check(imm, line_no):
+    if imm[0] == '$':
         try:
-            return not 0<=int(imm[1:])<=255
+            return not 0 <= int(imm[1:]) <= 255
         except:
-            raise_error(4,line_no)
+            raise_error(4, line_no)
             return True
-
 
 
 def label_check(line, line_no):
@@ -105,30 +107,29 @@ def label_check(line, line_no):
         labels or lname < 1
     labels.add(lname)
     if b:
-        raise_error(2,line_no)
+        raise_error(2, line_no)
     return b
 
 
 def halt_check(code):
-    x=len(code)-1
-    while(x>=0):
-        if code[x]=='':
+    x = len(code) - 1
+    while x >= 0:
+        if code[x] == '':
             code.pop(x)
-            x-=1
-        elif code[x]=='hlt':
+            x -= 1
+        elif code[x] == 'hlt':
             break
         else:
-            raise_error(7,x)
+            raise_error(7, x)
             return True
-    if(x==-1):
+    if x == -1:
         raise_error(7, 0)
         return True
-    for l,i in enumerate(code[:-1],1):
-        if i == 'hlt':
-            raise_error(8, l)
+    for line_no, line in enumerate(code[:-1], 1):
+        if line == 'hlt':
+            raise_error(8, line_no)
             return True
-    return not code[-x] == 'hlt'
-
+    return not code[-1] == 'hlt'
 
 
 def raise_error(error, line_no):
@@ -141,6 +142,6 @@ Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor'
 error_flag = False
 errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateError', 'MisuseError', 'VarInMidError',
           'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError']
-reg=['R0','R1','R2','R3','R4','R5','R6']
+reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = set()
 labels = set()

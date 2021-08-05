@@ -9,7 +9,7 @@ def main():
         # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
         #             '/test1'
         # '/Users/aayushgakhar/Desktop/test4'
-        path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test4'
+        path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test1'
         code = list(map(str.strip,open(path).readlines()))
     except:
         try:
