@@ -4,7 +4,7 @@ import compiler
 
 
 def main():
-    code = list(map(str.strip,sys.stdin.readlines()))
+    # code = list(map(str.strip,sys.stdin.readlines()))
     try:
         # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
         #             '/test1'
