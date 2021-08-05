@@ -32,7 +32,13 @@ def compile_instruction(line):
 
         if line.split()[2][0]=='$':
             opcode = '00010'
+            imm = str(bin(int(line.split()[2][1:]))[2:])
+            reg=Reg[int(line.split()[1][1])][1]
+            un=(8-len(imm))
+            sys.stdout.write(opcode + reg + un * '0' + imm)
+            sys.stdout.write('\n')
 
+            Reg[int(line.split()[1][1])][2]=int(line.split()[2][1:])  #values
         else:
             opcode='00011'
 
@@ -88,4 +94,4 @@ def compile_instruction(line):
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
                 'jlt', 'jgt', 'je', 'hlt']
 
-Reg = [['R0', '000'], ['R1', '001'], ['R2', '010'], ['R3', '011'], ['R4', '100'], ['R5', '101'], ['R6', '110']]
+Reg = [['R0', '000',0], ['R1', '001',0], ['R2', '010',0], ['R3', '011',0], ['R4', '100',0], ['R5', '101',0], ['R6', '110',0]]
