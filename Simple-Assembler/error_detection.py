@@ -53,7 +53,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
     elif line[0] == 'mov':
-        if len(line) == 3 and line[1] in reg and (line[2] in reg or immediate_check(line[2], line_no)):
+        if len(line) == 3 and line[1] in reg and (line[2] in reg or not immediate_check(line[2], line_no)):
             return False
         else:
             raise_error(9, line_no)
@@ -65,7 +65,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
     elif line[0] in ['rs', 'ls']:
-        if len(line) == 3 and line[1] in reg and immediate_check(line[2], line_no):
+        if len(line) == 3 and line[1] in reg and not immediate_check(line[2], line_no):
             return False
         else:
             raise_error(9, line_no)
@@ -100,8 +100,13 @@ def instruction_check(line, line_no):
 
 def immediate_check(imm, line_no):
     if imm[0] == '$':
+        print(1)
         try:
-            return not 0 <= int(imm[1:]) <= 255
+            if 0 <= int(imm[1:]) <= 255:
+                return False
+            else:
+                raise_error(4, line_no)
+                return True
         except:
             raise_error(4, line_no)
             return True
@@ -132,6 +137,8 @@ def halt_check(code):
         raise_error(7, 0)
         return True
     for line_no, line in enumerate(code[:-1], 1):
+        if not line:
+            continue
         if line[0] == 'hlt':
             raise_error(8, line_no)
             return True
@@ -151,7 +158,7 @@ Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor'
                 'jlt', 'jgt', 'je', 'hlt']
 error_flag = False
 errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateError', 'MisuseError', 'VarInMidError',
-          'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError']
+          'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError'] # 10
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = set()
 labels = set()
