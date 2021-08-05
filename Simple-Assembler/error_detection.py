@@ -117,10 +117,10 @@ def label_check(line, line_no):
 def halt_check(code):
     x = len(code) - 1
     while x >= 0:
-        if code[x] == '':
+        if not code[x]:
             code.pop(x)
             x -= 1
-        elif code[x] == 'hlt':
+        elif code[x] == ['hlt']:
             break
         else:
             raise_error(7, x)
