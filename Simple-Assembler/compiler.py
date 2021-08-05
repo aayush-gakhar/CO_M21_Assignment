@@ -11,6 +11,8 @@ def compile(code):
             compile_instruction(line)
         elif line.split()[0][-1] == ':':
             compile_label(line)
+        FLAGS = ()          #definig flags and resetting to 0 if any instruction does not affects
+
 
 
 def compile_variable(line):
@@ -129,9 +131,6 @@ def compile_instruction(line):
         sys.stdout.write(opcode+11*'0')
         sys.stdout.write('\n')
 
-    FLAGS=()
-
-
 
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
                 'jlt', 'jgt', 'je', 'hlt']
@@ -140,4 +139,3 @@ Reg = [['R0', '000',0], ['R1', '001',0], ['R2', '010',0], ['R3', '011',0], ['R4'
        ['R6', '110',0]]
 
 flags=[['V',0],['L',0],['G',0],['E',0]]
-
