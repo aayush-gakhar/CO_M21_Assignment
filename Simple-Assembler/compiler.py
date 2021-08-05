@@ -16,7 +16,6 @@ def compile(code):
 
 
 def compile_variable(line):
-
     pass
 
 
