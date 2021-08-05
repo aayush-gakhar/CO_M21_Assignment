@@ -8,11 +8,12 @@ def main():
     try:
         # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
         #             '/test1'
-        path='/Users/aayushgakhar/Desktop/test4'
+        # '/Users/aayushgakhar/Desktop/test4'
+        path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test4'
         code = list(map(str.strip,open(path).readlines()))
     except:
         try:
-            code = list(map(str.strip,open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test1')))
+            code = list(map(str.strip,open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test1').readlines()))
         except:
             # shrishti apna path idher likh le
             pass

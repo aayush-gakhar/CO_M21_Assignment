@@ -89,6 +89,15 @@ def instruction_check(line, line_no):
         return False
 
 
+def immediate_check(imm,line_no):
+    if imm[0]=='$':
+        try:
+            return not 0<=int(imm[1:])<=255
+        except:
+            raise_error(4,line_no)
+            return True
+
+
 
 def label_check(line, line_no):
     lname = line[0][:-1]
