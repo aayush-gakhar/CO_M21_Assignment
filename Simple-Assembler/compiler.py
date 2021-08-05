@@ -1,3 +1,4 @@
+import sys
 def compile(code):
     for line in code:
         if not line:
@@ -17,6 +18,7 @@ def compile_label(line):
     pass
 
 def compile_instruction(line):
+
     pass
 
 
