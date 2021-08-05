@@ -13,7 +13,7 @@ def main():
         code = list(map(str.strip,open(path).readlines()))
     except:
         try:
-            code = list(map(str.strip,open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test1').readlines()))
+            code = list(map(str.strip,open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test2').readlines()))
         except:
             # shrishti apna path idher likh le
             pass

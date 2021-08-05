@@ -36,6 +36,16 @@ def compile_instruction(line):
 
     elif line.split()[0] == 'sub':
         opcode = '00001'
+        reg1 = Reg[int(line.split()[1][1])][1]
+        reg2 = Reg[int(line.split()[2][1])][1]
+        reg3 = Reg[int(line.split()[3][1])][1]
+        sys.stdout.write(opcode + 2 * '0' + reg1 + reg2 + reg3)
+        sys.stdout.write('\n')
+
+        if (Reg[int(line.split()[2][1])][2] - Reg[int(line.split()[3][1])][2]<0):
+            Reg[int(line.split()[1][1])][2] = 0
+        elif(Reg[int(line.split()[2][1])][2] - Reg[int(line.split()[3][1])][2]>=0):
+            Reg[int(line.split()[1][1])][2] = Reg[int(line.split()[2][1])][2] - Reg[int(line.split()[3][1])][2]
 
     elif line.split()[0] == 'mov':
 
