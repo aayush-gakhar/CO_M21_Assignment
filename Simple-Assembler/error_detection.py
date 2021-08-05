@@ -4,7 +4,7 @@ import sys
 def check(code):
     # return True if error in code !!!
 
-    return halt_check(code) or iterate(code),var,labels
+    return halt_check(code) or iterate(code), var, labels
 
 
 def iterate(code):
@@ -44,13 +44,13 @@ def instruction_check(line, line_no):
         raise_error(0, line_no)
         return False
     if line[0] in ['add', 'sub', 'mul']:
-        if len(line)==4 and all(i in reg for i in line[1:]):
+        if len(line) == 4 and all(i in reg for i in line[1:]):
             return False
         else:
             raise_error(9, line_no)
             return True
     elif line[0] == 'mov':
-        if len(line) == 3 and line[1] in reg and (line[2] in reg or immediate_check(line[2],line_no)):
+        if len(line) == 3 and line[1] in reg and (line[2] in reg or immediate_check(line[2], line_no)):
             return False
         else:
             raise_error(9, line_no)
@@ -62,7 +62,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
     elif line[0] in ['rs', 'ls']:
-        if len(line) == 3 and line[1] in reg and immediate_check(line[2],line_no):
+        if len(line) == 3 and line[1] in reg and immediate_check(line[2], line_no):
             return False
         else:
             raise_error(9, line_no)
@@ -88,8 +88,8 @@ def instruction_check(line, line_no):
     elif line == 'hlt':
         return False
 
-# def reg_check(reg,line_no):
 
+# def reg_check(reg,line_no):
 
 
 def immediate_check(imm, line_no):
@@ -99,6 +99,9 @@ def immediate_check(imm, line_no):
         except:
             raise_error(4, line_no)
             return True
+    else:
+        raise_error(4, line_no)
+        return True
 
 
 def label_check(line, line_no):
