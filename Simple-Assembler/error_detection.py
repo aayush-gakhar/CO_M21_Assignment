@@ -10,20 +10,24 @@ def check(code):
 def iterate(code):
     var_flag = True
     for line_no, line in enumerate(code, start=1):
+        print(line)
         if not line:
             continue
         elif line[0] == 'var':
             if var_flag:
-                return variable_check(line, line_no)
+                if variable_check(line, line_no):
+                    return True
             else:
                 raise_error(6, line_no)
                 return True
         elif line[0][-1] == ':':
             var_flag = False
-            return label_check(line, line_no) and instruction_check(line[1:], line_no)
+            if label_check(line, line_no) and instruction_check(line[1:], line_no):
+                return True
         elif line[0] in Instructions:
             var_flag = False
-            return instruction_check(line, line_no)
+            if instruction_check(line, line_no):
+                return True
         else:
             raise_error(0, line_no)
             return True
@@ -79,14 +83,16 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
     elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:
-        print(line)
         if len(line == 2) and line[1] in labels:
             return False
         else:
             raise_error(9, line_no)
             return True
-    elif line == 'hlt':
+    elif line == ['hlt']:
         return False
+    else:
+        raise_error(9,line_no)
+        return True
 
 
 # def reg_check(reg,line_no):
@@ -106,8 +112,7 @@ def immediate_check(imm, line_no):
 
 def label_check(line, line_no):
     lname = line[0][:-1]
-    b = line[-1] != ':' or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in \
-        labels or lname < 1
+    b = line[-1] != ':' or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or lname < 1
     labels.add(lname)
     if b:
         raise_error(2, line_no)
@@ -115,24 +120,26 @@ def label_check(line, line_no):
 
 
 def halt_check(code):
+    # done
     x = len(code) - 1
     while x >= 0:
         if not code[x]:
             code.pop(x)
             x -= 1
-        elif code[x] == ['hlt']:
-            break
         else:
-            raise_error(7, x)
-            return True
+            break
     if x == -1:
         raise_error(7, 0)
         return True
     for line_no, line in enumerate(code[:-1], 1):
-        if line == 'hlt':
+        if line[0] == 'hlt':
             raise_error(8, line_no)
             return True
-    return not code[-1] == 'hlt'
+    if code[-1]==['hlt']:
+        return False
+    else:
+        raise_error(7, x)
+        return True
 
 
 def raise_error(error, line_no):
@@ -148,3 +155,4 @@ errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateErr
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = set()
 labels = set()
+ins_number=0
