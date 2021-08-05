@@ -97,6 +97,9 @@ def compile_instruction(line):
 
     elif line.split()[0] == 'hlt':
         opcode = '10011'
+        sys.stdout.write(opcode+11*'0')
+        sys.stdout.write('\n')
+
 
 
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
