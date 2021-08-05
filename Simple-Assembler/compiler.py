@@ -2,8 +2,7 @@ import sys
 
 
 def compile(code):
-    int i = 0
-    global code_length = len(code)
+    i = 0
     for line in code:
         if not line:
             continue
@@ -17,10 +16,10 @@ def compile(code):
 
 
 def compile_variable(line):
-    labels_variables.append(line[1])
+    pass
 
 def compile_label(line,i):
-    label_dict[line[0][:-1]] = i
+    labels[line[0][:-1]] = i
 
 def compile_instruction(line):
 
@@ -56,14 +55,14 @@ def compile_instruction(line):
     elif line[0] in ['ld','st',]:
         opcode = Instructions[line[0]]
         reg1 = Reg[int(line[1][1])][1]
-        mem_addr = bin(code_length+variables.index(line[2][1])-len(variables))
+        mem_addr = bin(variables.index(line[2][1])-len(variables))
         un = 3
         sys.stdout.write(opcode + un*'0'+ reg1 + mem_addr)
         sys.stdout.write('\n')
 
     elif line[0] in ['jlt','jgt','jmp','je']:
         opcode = Instructions[line[0]]
-        addr = bin(label_dict[line[2]])
+        addr = bin(labels[line[2]])
         un = 3
         sys.stdout.write(opcode + un*'0'+ addr)
         sys.stdout.write('\n')
@@ -79,8 +78,9 @@ def compile_instruction(line):
         #sys.stdout.write()
         #sys.stdout.write('\n')
 
-variables = []
-label_dict={}
+variables = {}
+labels={}
+
 
 Instructions = {'add':'00000', 'sub':'00001', 'mov':'00010', 'ld':'00100','st':'00101', 'mul':'00110', 'div':'00111', 'rs':'01000', 'ls':'01001', 'xor':'01010', 'or':'01011', 'and':'01100', 'not':'01101', 'cmp':'01110', 'jmp':'01111',
                 'jlt':'10000', 'jgt':'10001', 'je':'10010', 'hlt':'10011'}
