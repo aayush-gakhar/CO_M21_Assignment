@@ -9,9 +9,9 @@ def main():
     try:
         # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
         #             '/test1'
-        # path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test2'
+        path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test2'
 
-        path='/Users/aayushgakhar/Desktop/test4'
+        # path='/Users/aayushgakhar/Desktop/test4'
         code = [i.strip().split() for i in open(path).readlines()]
     except:
         try:
@@ -24,8 +24,8 @@ def main():
     print(labels)
     if has_error:
         print('error')
-    else:
-        compiler.compile(code)
+    # else:
+    #     compiler.compile(code)
 
 
 main()
