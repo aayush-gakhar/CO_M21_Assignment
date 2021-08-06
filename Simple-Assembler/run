@@ -2,4 +2,4 @@
 
 # Add command to run your program here
 # echo "Hello World"
-python assembler.py
+python3 assembler.py
