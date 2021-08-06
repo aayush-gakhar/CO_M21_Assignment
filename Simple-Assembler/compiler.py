@@ -1,10 +1,12 @@
 import sys
 
 
-def compile_(code,ins_no,l,v):
-    labels=l
-    variables=v
-    instruction_number[0]=ins_no
+def compile_(code, ins_no, l, v):
+    global labels
+    labels = l
+    global variables
+    variables = v
+    instruction_number[0] = ins_no
     i = 0
     for line in code:
         if not line:
@@ -15,64 +17,45 @@ def compile_(code,ins_no,l,v):
             compile_instruction(line)
         elif line[0][-1] == ':':
             compile_instruction(line[1:])
-    return (variables,labels)
 
 
 def compile_variable(line):
-    variables[line[1]]=instruction_number[0]
+    variables[line[1]] = instruction_number[0]
     print(variables)
-    instruction_number[0]+=1
+    instruction_number[0] += 1
 
 
 def compile_instruction(line):
     if line[0] in ['add', 'sub', 'mul', 'xor', 'or', 'and', ]:
-        opcode = Instructions[line[0]]
-        reg1 = Reg[line[1]]
-        reg2 = Reg[line[2]]
-        reg3 = Reg[line[3]]
-        sys.stdout.write(opcode + 2 * '0' + reg1 + reg2 + reg3)
-        sys.stdout.write('\n')
+        sys.stdout.write(Instructions[line[0]] + 2 * '0' + Reg[line[1]] + Reg[line[2]] + Reg[line[3]] + '\n')
+
     elif line[0] in ['rs', 'ls']:
-        opcode = Instructions[line[0]]
-        imm = str(bin(int(line[2][1:])).replace("0b", ""))
-        un = 8 - len(imm)
-        sys.stdout.write(opcode + Reg[line[1]] + un * '0' + imm)
-        sys.stdout.write('\n')
+        sys.stdout.write(Instructions[line[0]] + Reg[line[1]] + conv_bin(line[2][1:]) + '\n')
 
     elif line[0] in ['div', 'not', 'cmp']:
+        sys.stdout.write(Instructions[line[0]] + 5 * '0' + Reg[line[1]] + Reg[line[2]] + '\n')
 
+    elif line[0] in ['ld', 'st']:
         opcode = Instructions[line[0]]
-        sys.stdout.write(opcode + 5 * '0' + Reg[line[1]] + Reg[line[2]])
-        sys.stdout.write('\n')
-
-
-    elif line[0] in ['ld','st']:
-        opcode = Instructions[line[0]]
-
 
     elif line[0] in ['jlt', 'jgt', 'jmp', 'je']:
-        opcode = Instructions[line[0]]
-        label=labels[line[1]]
-        sys.stdout.write(opcode + label)
-        sys.stdout.write('\n')
-
+        sys.stdout.write(Instructions[line[0]] + conv_bin(labels[line[1]]) + '\n')
 
     elif line[0] == 'hlt':
-        opcode = Instructions[line[0]]
-        sys.stdout.write(opcode + 11 * '0')
-        sys.stdout.write('\n')
+        sys.stdout.write(Instructions[line[0]] + 11 * '0' + '\n')
 
     elif line[0] == 'mov':
-        if line[2][0]=='$':
-            opcode = '00010'
-            imm=str(bin(int(line[2][1:])).replace("0b",""))
-            un=8-len(imm)
-            sys.stdout.write(opcode+Reg[line[1]]+un*'0'+imm)
-            sys.stdout.write('\n')
+        if line[2][0] == '$':
+            sys.stdout.write('00010' + Reg[line[1]] + conv_bin(line[2][1:]) + '\n')
         else:
-            opcode='00011'
-            sys.stdout.write(opcode+5*'0'+Reg[line[1]]+Reg[line[2]])
-            sys.stdout.write('\n')
+            sys.stdout.write('00011' + 5 * '0' + Reg[line[1]] + Reg[line[2]] + '\n')
+
+
+def conv_bin(n):
+    l = 8
+    s = bin(int(n)).replace('0b', '')
+    return (8 - len(s)) * '0' + s
+
 
 Instructions = {'add': '00000', 'sub': '00001', 'mov': '00010', 'ld': '00100', 'st': '00101', 'mul': '00110',
                 'div': '00111', 'rs': '01000', 'ls': '01001', 'xor': '01010', 'or': '01011', 'and': '01100',
@@ -80,7 +63,7 @@ Instructions = {'add': '00000', 'sub': '00001', 'mov': '00010', 'ld': '00100', '
                 'jlt': '10000', 'jgt': '10001', 'je': '10010', 'hlt': '10011'}
 
 Reg = {'R0': '000', 'R1': '001', 'R2': '010', 'R3': '011', 'R4': '100', 'R5': '101',
-       'R6': '110'}
+       'R6': '110', 'FLAGS': '111'}
 variables = {}
 labels = {}
-instruction_number=[0]
+instruction_number = [0]
