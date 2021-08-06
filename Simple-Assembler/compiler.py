@@ -38,6 +38,7 @@ def compile_instruction(line):
         opcode = Instructions[line[0]]
         sys.stdout.write(Instructions[line[0]]+Reg[line[1]]+conv_bin(variables[line[2]])+'\n')
 
+
     elif line[0] in ['jlt', 'jgt', 'jmp', 'je']:
         sys.stdout.write(Instructions[line[0]] + '000' + conv_bin(labels[line[1]]) + '\n')
 

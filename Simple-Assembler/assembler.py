@@ -4,8 +4,9 @@ import compiler
 
 
 def main():
-    code = list(map(str.strip,sys.stdin.readlines()))
+    #code = list(map(str.strip,sys.stdin.readlines()))
 
+<<<<<<< HEAD
     # try:
     #     # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
     #     #             '/test1'
@@ -20,6 +21,22 @@ def main():
     #     except:
     #         path = ''  # srishti path
     #         code = [i.strip().split() for i in open(path).readlines()]
+=======
+    try:
+        # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
+        #             '/test1'
+        # path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/hardBin/test2'
+
+        path = '/Users/aayushgakhar/Desktop/test4'
+        code = [i.strip().split() for i in open(path).readlines()]
+    except:
+        try:
+            code = [i.strip().split() for i in
+                    open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test5').readlines()]
+        except:
+             path = ''  # srishti path
+             code = [i.strip().split() for i in open(path).readlines()]
+>>>>>>> faa44ce9eee106edb8b0fb17a994dc376b13b7c2
 
     # print(code)
     has_error, var, labels, instruction_number = error_detection.check(code)
