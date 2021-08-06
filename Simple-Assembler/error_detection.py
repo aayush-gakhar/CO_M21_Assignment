@@ -4,7 +4,12 @@ import sys
 def check(code):
     # return True if error in code !!!
 
-    return  halt_check(code)  or iterate(code) or any(i not in labels for i in used) , var, labels, instruction_number[0]
+    b =  halt_check(code)  or iterate(code)
+    x = any(i not in labels for i in used)
+    if(x):
+        raise_error(2,1)
+
+    return b, var, labels, instruction_number[0]
 
 
 
