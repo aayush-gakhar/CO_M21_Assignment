@@ -21,7 +21,6 @@ def compile_(code, ins_no, l, v):
 
 def compile_variable(line):
     variables[line[1]] = instruction_number[0]
-    print(variables)
     instruction_number[0] += 1
 
 
@@ -43,7 +42,7 @@ def compile_instruction(line):
         sys.stdout.write(Instructions[line[0]] + '000' + conv_bin(labels[line[1]]) + '\n')
 
     elif line[0] == 'hlt':
-        sys.stdout.write(Instructions[line[0]] + 11 * '0' + '\n')
+        sys.stdout.write(Instructions[line[0]] + 11 * '0' )
 
     elif line[0] == 'mov':
         if line[2][0] == '$':

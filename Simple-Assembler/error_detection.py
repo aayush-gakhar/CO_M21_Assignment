@@ -9,7 +9,7 @@ def check(code):
     if(x):
         raise_error(2,1)
 
-    return b, var, labels, instruction_number[0]
+    return b or x, var, labels, instruction_number[0]
 
 
 
