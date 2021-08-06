@@ -18,7 +18,6 @@ def main():
     #         code = [i.strip().split() for i in
     #                 open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test5').readlines()]
     #     except:
-    #          path = ''  # srishti path
     #          path = 'C:\Users\hp\Documents\GitHub\assignment 1\automatedTesting\tests\assembly\errorGen'  # srishti path
     #          code = [i.strip().split() for i in open(path).readlines()]
 
