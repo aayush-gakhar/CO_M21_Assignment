@@ -50,6 +50,7 @@ def compile_instruction(line):
         opcode = Instructions[line[0]]
 
 
+
     elif line[0] in ['jlt', 'jgt', 'jmp', 'je']:
         opcode = Instructions[line[0]]
         label=labels[line[1]]
