@@ -20,7 +20,7 @@ def compile_(code, ins_no, l, v):
 
 
 def compile_variable(line):
-    variables[line[1]] = instruction_number[0]
+    variables[line[1]] = conv_bin(instruction_number[0])
     instruction_number[0] += 1
 
 
@@ -36,8 +36,7 @@ def compile_instruction(line):
 
     elif line[0] in ['ld', 'st']:
         opcode = Instructions[line[0]]
-        sys.stdout.write(Instructions[line[0]]+Reg[line[1]]+conv_bin(variables[line[2]])+'\n')
-
+        sys.stdout.write(Instructions[line[0]]+Reg[line[1]]+variables[line[2]]+'\n')
 
     elif line[0] in ['jlt', 'jgt', 'jmp', 'je']:
         sys.stdout.write(Instructions[line[0]] + '000' + conv_bin(labels[line[1]]) + '\n')

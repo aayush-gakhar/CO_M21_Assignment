@@ -4,10 +4,10 @@ import sys
 def check(code):
     # return True if error in code !!!
 
-    b =  halt_check(code)  or iterate(code)
-    x = any(i not in labels for i in used)
-    if(x):
-        raise_error(2,1)
+    b = halt_check(code)  or iterate(code)
+    x = [i for i in used if i not in labels]
+    if x:
+        raise_error(2,used[x[0]])
 
     return b or x, var, labels, instruction_number[0]
 
@@ -71,6 +71,12 @@ def instruction_check(line, line_no):
     elif line[0] in ['ld', 'st']:
         if len(line) == 3 and line[1] in reg and line[2] in var:
             return False
+        elif line[2] not in var:
+            raise_error(1,line_no)
+            return True
+        elif line[1] == 'FLAGS':
+            raise_error(3,line_no)
+            return True
         else:
             raise_error(9, line_no)
             return True
@@ -88,8 +94,8 @@ def instruction_check(line, line_no):
             return True
     elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:
         if len(line)==2:
-            if line[1] not in labels:
-                used.add(line[1])
+            if line[1] not in labels and line[1] not in used:
+                used[line[1]]=line_no
             return False
         else:
             raise_error(9, line_no)
@@ -163,10 +169,10 @@ def raise_error(error, line_no):
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
                 'jlt', 'jgt', 'je', 'hlt']
 error_flag = False
-errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateError', 'MisuseError', 'VarInMidError',
+errors = ['TypoError', 'UndefinedVariableError', 'UndefinedLabelError', 'IllegalFlagError', 'IllegalImmediateError', 'MisuseError', 'VarInMidError',
           'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError']  # 10
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = {}
 labels = {}
-used=set()
+used= {}
 instruction_number = [0]
