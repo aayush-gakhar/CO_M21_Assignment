@@ -3,30 +3,31 @@ import error_detection
 import compiler
 
 
-
 def main():
     # code = list(map(str.strip,sys.stdin.readlines()))
+
     try:
         # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
         #             '/test1'
-        path='/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test2'
+        path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/hardBin/test1'
 
-        # path='/Users/aayushgakhar/Desktop/test4'
+        path = '/Users/aayushgakhar/Desktop/test4'
         code = [i.strip().split() for i in open(path).readlines()]
     except:
         try:
-            code = [i.strip().split() for i in open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test5').readlines()]
+            code = [i.strip().split() for i in
+                    open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/simpleBin/test5').readlines()]
         except:
-            # shrishti apna path idher likh le
-            pass
-    print(code)
-    has_error, var, labels = error_detection.check(code)
+            path = ''  # srishti path
+            code = [i.strip().split() for i in open(path).readlines()]
+
+    # print(code)
+    has_error, var, labels, instruction_number = error_detection.check(code)
     if has_error:
-        print('error')
+        pass
+        # print('error')
     else:
         compiler.compile_(code)
 
 
 main()
-var = dict()
-lab = dict()

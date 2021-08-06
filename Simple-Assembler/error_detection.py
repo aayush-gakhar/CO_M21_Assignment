@@ -4,13 +4,12 @@ import sys
 def check(code):
     # return True if error in code !!!
 
-    return halt_check(code) or iterate(code), var, labels
+    return halt_check(code) or iterate(code), var, labels, instruction_number[0]
 
 
 def iterate(code):
     var_flag = True
     for line_no, line in enumerate(code, start=1):
-        print(line)
         if not line:
             continue
         elif line[0] == 'var':
@@ -36,7 +35,7 @@ def iterate(code):
 def variable_check(line, line_no):
     b = len(line) != 2 or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in line[1].lower()) or line[
         1] in var
-    var.add(line[1])
+    var[line[1]] = ''
     if b:
         raise_error(1, line_no)
     return b
@@ -47,15 +46,16 @@ def instruction_check(line, line_no):
         raise_error(0, line_no)
         return False
     else:
-        instruction_number+=1
-    if line[0] in ['add', 'sub', 'mul','xor', 'or', 'and']:
+        instruction_number[0] += 1
+    if line[0] in ['add', 'sub', 'mul', 'xor', 'or', 'and']:
         if len(line) == 4 and all(i in reg for i in line[1:]):
             return False
         else:
             raise_error(9, line_no)
             return True
     elif line[0] == 'mov':
-        if len(line) == 3 and line[1] in reg and (line[2] in reg or line[2]=='FLAGS' or not immediate_check(line[2], line_no)):
+        if len(line) == 3 and line[1] in reg and (
+                line[2] in reg or line[2] == 'FLAGS' or not immediate_check(line[2], line_no)):
             return False
         else:
             raise_error(9, line_no)
@@ -87,7 +87,7 @@ def instruction_check(line, line_no):
     elif line == ['hlt']:
         return False
     else:
-        raise_error(9,line_no)
+        raise_error(9, line_no)
         return True
 
 
@@ -96,7 +96,6 @@ def instruction_check(line, line_no):
 
 def immediate_check(imm, line_no):
     if imm[0] == '$':
-        print(1)
         try:
             if 0 <= int(imm[1:]) <= 255:
                 return False
@@ -113,8 +112,9 @@ def immediate_check(imm, line_no):
 
 def label_check(line, line_no):
     lname = line[0][:-1]
-    b = line[-1] != ':' or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or lname < 1
-    labels.add(lname)
+    b = line[-1] != ':' or any(
+        i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or lname < 1
+    labels[lname] = instruction_number[0]
     if b:
         raise_error(2, line_no)
     return b
@@ -138,7 +138,7 @@ def halt_check(code):
         if line[0] == 'hlt':
             raise_error(8, line_no)
             return True
-    if code[-1]==['hlt']:
+    if code[-1] == ['hlt']:
         return False
     else:
         raise_error(7, x)
@@ -154,8 +154,8 @@ Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor'
                 'jlt', 'jgt', 'je', 'hlt']
 error_flag = False
 errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateError', 'MisuseError', 'VarInMidError',
-          'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError'] # 10
+          'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError']  # 10
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = {}
 labels = {}
-instruction_number=0
+instruction_number = [0]
