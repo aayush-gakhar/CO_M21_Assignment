@@ -46,14 +46,16 @@ def instruction_check(line, line_no):
     if line[0] not in Instructions:
         raise_error(0, line_no)
         return False
-    if line[0] in ['add', 'sub', 'mul']:
+    else:
+        instruction_number+=1
+    if line[0] in ['add', 'sub', 'mul','xor', 'or', 'and']:
         if len(line) == 4 and all(i in reg for i in line[1:]):
             return False
         else:
             raise_error(9, line_no)
             return True
     elif line[0] == 'mov':
-        if len(line) == 3 and line[1] in reg and (line[2] in reg or not immediate_check(line[2], line_no)):
+        if len(line) == 3 and line[1] in reg and (line[2] in reg or line[2]=='FLAGS' or not immediate_check(line[2], line_no)):
             return False
         else:
             raise_error(9, line_no)
@@ -66,12 +68,6 @@ def instruction_check(line, line_no):
             return True
     elif line[0] in ['rs', 'ls']:
         if len(line) == 3 and line[1] in reg and not immediate_check(line[2], line_no):
-            return False
-        else:
-            raise_error(9, line_no)
-            return True
-    elif line[0] in ['xor', 'or', 'and']:
-        if len(line == 4) and all(i in reg for i in line[1:]):
             return False
         else:
             raise_error(9, line_no)
@@ -160,6 +156,6 @@ error_flag = False
 errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateError', 'MisuseError', 'VarInMidError',
           'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError'] # 10
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
-var = set()
-labels = set()
-ins_number=0
+var = {}
+labels = {}
+instruction_number=0
