@@ -11,7 +11,7 @@ def main():
         #             '/test1'
         path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/hardBin/test1'
 
-        path = '/Users/aayushgakhar/Desktop/test4'
+        # path = '/Users/aayushgakhar/Desktop/test4'
         code = [i.strip().split() for i in open(path).readlines()]
     except:
         try:
@@ -25,9 +25,11 @@ def main():
     has_error, var, labels, instruction_number = error_detection.check(code)
     if has_error:
         pass
-        # print('error')
+        print('error')
     else:
-        compiler.compile_(code)
+        print(instruction_number,var,labels)
+        var,labels=compiler.compile_(code,instruction_number,labels,var)
+        print(var)
 
 
 main()

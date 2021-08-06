@@ -1,7 +1,10 @@
 import sys
 
 
-def compile_(code):
+def compile_(code,ins_no,l,v):
+    labels=l
+    variables=v
+    instruction_number[0]=ins_no
     i = 0
     for line in code:
         if not line:
@@ -11,17 +14,14 @@ def compile_(code):
         elif line[0] in Instructions:
             compile_instruction(line)
         elif line[0][-1] == ':':
-            compile_label(line)
+            compile_instruction(line[1:])
+    return (variables,labels)
 
 
 def compile_variable(line):
-    pass
-
-
-def compile_label(line, i):
-    labels[line[0][:-1]] = i
-
-
+    variables[line[1]]=instruction_number[0]
+    print(variables)
+    instruction_number[0]+=1
 
 
 def compile_instruction(line):
@@ -52,6 +52,9 @@ def compile_instruction(line):
 
     elif line[0] in ['jlt', 'jgt', 'jmp', 'je']:
         opcode = Instructions[line[0]]
+        label=labels[line[1]]
+        sys.stdout.write(opcode + label)
+        sys.stdout.write('\n')
 
 
     elif line[0] == 'hlt':
@@ -80,3 +83,4 @@ Reg = {'R0': '000', 'R1': '001', 'R2': '010', 'R3': '011', 'R4': '100', 'R5': '1
        'R6': '110'}
 variables = {}
 labels = {}
+instruction_number=[0]

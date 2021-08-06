@@ -10,6 +10,7 @@ def check(code):
 def iterate(code):
     var_flag = True
     for line_no, line in enumerate(code, start=1):
+        # print(line)
         if not line:
             continue
         elif line[0] == 'var':
@@ -21,7 +22,7 @@ def iterate(code):
                 return True
         elif line[0][-1] == ':':
             var_flag = False
-            if label_check(line, line_no) and instruction_check(line[1:], line_no):
+            if label_check(line, line_no) or instruction_check(line[1:], line_no):
                 return True
         elif line[0] in Instructions:
             var_flag = False
@@ -44,7 +45,7 @@ def variable_check(line, line_no):
 def instruction_check(line, line_no):
     if line[0] not in Instructions:
         raise_error(0, line_no)
-        return False
+        return True
     else:
         instruction_number[0] += 1
     if line[0] in ['add', 'sub', 'mul', 'xor', 'or', 'and']:
@@ -112,9 +113,9 @@ def immediate_check(imm, line_no):
 
 def label_check(line, line_no):
     lname = line[0][:-1]
-    b = line[-1] != ':' or any(
-        i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or lname < 1
-    labels[lname] = instruction_number[0]
+    b = line[0][-1] != ':' or any(
+        i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or len(lname) < 1
+    labels[lname] = instruction_number[0]+1
     if b:
         raise_error(2, line_no)
     return b
