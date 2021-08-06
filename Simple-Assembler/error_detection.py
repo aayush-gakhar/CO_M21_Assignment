@@ -4,7 +4,13 @@ import sys
 def check(code):
     # return True if error in code !!!
 
-    return halt_check(code) or iterate(code), var, labels, instruction_number[0]
+    b =  halt_check(code)  or iterate(code)
+    x = any(i not in labels for i in used)
+    if(x):
+        raise_error(2,1)
+
+    return b, var, labels, instruction_number[0]
+
 
 
 def iterate(code):
@@ -24,6 +30,7 @@ def iterate(code):
             var_flag = False
             if label_check(line, line_no) or instruction_check(line[1:], line_no):
                 return True
+            code[line_no-1]=line[1:]
         elif line[0] in Instructions:
             var_flag = False
             if instruction_check(line, line_no):
@@ -74,13 +81,15 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
     elif line[0] in ['div', 'not', 'cmp']:
-        if len(line == 3) and all(i in reg for i in line[1:]):
+        if len(line) == 3 and all(i in reg for i in line[1:]):
             return False
         else:
             raise_error(9, line_no)
             return True
     elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:
-        if len(line == 2) and line[1] in labels:
+        if len(line)==2:
+            if line[1] not in labels:
+                used.add(line[1])
             return False
         else:
             raise_error(9, line_no)
@@ -136,10 +145,10 @@ def halt_check(code):
     for line_no, line in enumerate(code[:-1], 1):
         if not line:
             continue
-        if line[0] == 'hlt':
+        if 'hlt' in line:
             raise_error(8, line_no)
             return True
-    if code[-1] == ['hlt']:
+    if 'hlt' in code[-1]:
         return False
     else:
         raise_error(7, x)
@@ -159,4 +168,5 @@ errors = ['NameError', 'VariableError', 'LabelError', 'FlagError', 'ImmediateErr
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = {}
 labels = {}
+used=set()
 instruction_number = [0]
