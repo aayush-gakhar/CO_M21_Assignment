@@ -52,7 +52,6 @@ def compile_instruction(line):
 
 
 def conv_bin(n):
-    l = 8
     s = bin(int(n)).replace('0b', '')
     return (8 - len(s)) * '0' + s
 
