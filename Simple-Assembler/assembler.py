@@ -28,6 +28,7 @@ def main():
     if has_error:
         pass
         # print('error')
+        # final
     else:
         compiler.compile_(code,instruction_number,labels,var)
 
