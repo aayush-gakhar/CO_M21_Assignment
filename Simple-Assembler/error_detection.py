@@ -7,7 +7,7 @@ def check(code):
     b = halt_check(code)  or iterate(code)
     x = [i for i in used if i not in labels]
     if x:
-        raise_error(2,used[x[0]])
+        raise_error(2,used[x[0]],x[0])
 
     return b or x, var, labels, instruction_number[0]
 
@@ -56,45 +56,74 @@ def instruction_check(line, line_no):
     else:
         instruction_number[0] += 1
     if line[0] in ['add', 'sub', 'mul', 'xor', 'or', 'and']:
-        if len(line) == 4 and all(i in reg for i in line[1:]):
-            return False
+        if len(line) == 4:
+            if all(i in reg for i in line[1:]):
+                return False
+            elif 'FLAGS' in line:
+                raise_error(3,line_no)
+                return True
+            else:
+                raise_error(0,line_no)
+                return True
         else:
             raise_error(9, line_no)
             return True
     elif line[0] == 'mov':
-        if len(line) == 3 and line[1] in reg and (
-                line[2] in reg or line[2] == 'FLAGS' or not immediate_check(line[2], line_no)):
-            return False
+        if len(line) == 3:
+            if line[1] in reg:
+                if line[2] in reg or line[2] == 'FLAGS':
+                    return False
+                elif line[2][0]=='$':
+                    return immediate_check(line[2], line_no)
+                else:
+                    raise_error(0,line_no)
+                    return True
+            else:
+                raise_error(0,line_no,line[1])
         else:
             raise_error(9, line_no)
             return True
     elif line[0] in ['ld', 'st']:
-        if len(line) == 3 and line[1] in reg and line[2] in var:
-            return False
-        elif line[2] not in var:
-            raise_error(1,line_no)
-            return True
-        elif line[1] == 'FLAGS':
-            raise_error(3,line_no)
-            return True
+        if len(line) == 3:
+            if line[1] in reg and line[2] in var:
+                return False
+            elif line[2] not in var:
+                raise_error(1,line_no)
+                return True
+            elif line[1] == 'FLAGS':
+                raise_error(3,line_no)
+                return True
         else:
             raise_error(9, line_no)
             return True
     elif line[0] in ['rs', 'ls']:
-        if len(line) == 3 and line[1] in reg and not immediate_check(line[2], line_no):
-            return False
+        if len(line) == 3:
+            if line[1] in reg:
+                return immediate_check(line[2], line_no)
+            else:
+                raise_error(0,line_no,line[1])
         else:
-            raise_error(9, line_no)
+            raise_error(9, line_no,line)
             return True
     elif line[0] in ['div', 'not', 'cmp']:
-        if len(line) == 3 and all(i in reg for i in line[1:]):
-            return False
+        if len(line) == 3:
+            if all(i in reg for i in line[1:]):
+                return False
+            elif 'FLAGS' in line:
+                raise_error(3, line_no)
+                return True
+            else:
+                raise_error(0, line_no)
+                return True
         else:
             raise_error(9, line_no)
             return True
     elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:
         if len(line)==2:
             if line[1] not in labels and line[1] not in used:
+                if line[1] in var:
+                    raise_error(5,line_no)
+                    return True
                 used[line[1]]=line_no
             return False
         else:
@@ -105,6 +134,8 @@ def instruction_check(line, line_no):
     else:
         raise_error(9, line_no)
         return True
+    raise_error(9,line_no)
+    return True
 
 
 # def reg_check(reg,line_no):
@@ -116,7 +147,7 @@ def immediate_check(imm, line_no):
             if 0 <= int(imm[1:]) <= 255:
                 return False
             else:
-                raise_error(4, line_no)
+                raise_error(4, line_no,imm)
                 return True
         except:
             raise_error(4, line_no)
@@ -161,16 +192,16 @@ def halt_check(code):
         return True
 
 
-def raise_error(error, line_no):
+def raise_error(error, line_no,s=''):
     error_flag = True
-    sys.stdout.write(errors[error] + ' Line: ' + str(line_no) + '\n')
+    sys.stdout.write('ERROR: '+errors[error] + '; Line: ' + str(line_no)+(' ==>' if s else '') + s + '\n')
 
 
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
                 'jlt', 'jgt', 'je', 'hlt']
 error_flag = False
-errors = ['TypoError', 'UndefinedVariableError', 'UndefinedLabelError', 'IllegalFlagError', 'IllegalImmediateError', 'MisuseError', 'VarInMidError',
-          'MissingHltError', 'HltInMidError', 'SyntaxError', 'GeneralSyntaxError']  # 10
+errors = ['Typo Error', 'Undefined Variable Error', 'Undefined Label Error', 'Illegal Flag Error', 'Illegal Immediate Error', 'Misuse Error', 'Var In Mid Error',
+          'Missing Hlt Error', 'Hlt In Mid Error', 'Syntax Error', 'General Syntax Error']  # 10
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = {}
 labels = {}
