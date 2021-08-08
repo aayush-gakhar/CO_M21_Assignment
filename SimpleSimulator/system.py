@@ -11,11 +11,15 @@ class MEM:
             sys.stdout.write(i + '\n')
 
     def load(self, ind):
+        if type(ind)== str:
+            ind=conv_to_dec(ind)
         return self.memory[ind]
 
     def store(self, ind, val):
         if type(val) == int:
-            val = conv_to_bin(val)
+            val = conv_to_bin(val,16)
+        if type(ind)== str:
+            ind=conv_to_dec(ind)
         self.memory[ind] = val
 
 
@@ -89,58 +93,78 @@ def execute(instruction, a):
         r2 = instruction[10:13]
         r3 = instruction[13:]
         if opcode == '00000':  # addition
-            rf.set(r1, int(rf.get(r2), 2) + int(rf.get(r2), 2))
+            rf.set(r1, int(rf.get(r2), 2) + int(rf.get(r3), 2))
         elif opcode == '00001':  # substraction
-            rf.set(r1, int(rf.get(r2), 2) - int(rf.get(r2), 2))
+            rf.set(r1, int(rf.get(r2), 2) - int(rf.get(r3), 2))
         elif opcode == '00110':  # multiply
-            rf.set(r1, int(rf.get(r2), 2) * int(rf.get(r2), 2))
+            rf.set(r1, int(rf.get(r2), 2) * int(rf.get(r3), 2))
         elif opcode == '01010':  # XOR
-            rf.set(r1, int(rf.get(r2), 2) ^ int(rf.get(r2), 2))
+            rf.set(r1, int(rf.get(r2), 2) ^ int(rf.get(r3), 2))
         elif opcode == '01011':  # or
-            rf.set(r1, int(rf.get(r2), 2) & int(rf.get(r2), 2))
+            rf.set(r1, int(rf.get(r2), 2) & int(rf.get(r3), 2))
         elif opcode == '01100':  # and
-            rf.set(r1, int(rf.get(r2), 2) | int(rf.get(r2), 2))
+            rf.set(r1, int(rf.get(r2), 2) | int(rf.get(r3), 2))
 
     elif opcode in ['00010', '01000', '01001']:  # B
-        if opcode == '00010':
-            pass
-        elif opcode == '01000':
-            pass
-        elif opcode == '01001':
-            pass
+        rf.reset_flag()
+        r1=instruction[5:8]
+        imm=instruction[8:]
+        if opcode == '00010': # move
+            rf.set(r1, '00000000'+imm)
+        elif opcode == '01000': # rs
+            rf.set(r1, int(rf.get(r1), 2)>>imm)
+        elif opcode == '01001': # ls
+            rf.set(r1, (int(rf.get(r1), 2)<<imm)%2**16)
 
     elif opcode in ['00011', '00111', '01101', '01110']:  # C
-        if opcode == '00011':
-            pass
-        elif opcode == '00111':
-            pass
-        elif opcode == '01101':
-            pass
-        elif opcode == '01110':
-            pass
+        rf.reset_flag()
+        r1 = instruction[10:13]
+        r2 = instruction[13:]
+        if opcode == '00011': # move
+            rf.set(r1,rf.get(r2))
+        elif opcode == '00111': # divide
+            rf.set('000', int(rf.get(r1), 2) / int(rf.get(r2), 2))
+            rf.set('001', int(rf.get(r1), 2) % int(rf.get(r2), 2))
+        elif opcode == '01101': # invert
+            rf.set(r1, ''.join('1' if i == '0' else '0' for i in rf.get(r2)))
+        elif opcode == '01110': # compare
+            a,b = int(rf.get(r1), 2) , int(rf.get(r2), 2)
+            if a<b:
+                rf.set_flag('L')
+            elif a>b:
+                rf.set_flag('G')
+            else:
+                rf.set_flag('E')
 
     elif opcode in ['00100', '00101']:  # D
-        if opcode == '00100':
-            pass
-        elif opcode == '00101':
-            pass
+        r1 = instruction[5:8]
+        mem_addr = instruction[8:]
+        if opcode == '00100': # load
+            rf.set(r1,mem.load(mem_addr))
+        elif opcode == '00101': # store
+            mem.store(mem_addr,rf.get(r1))
 
     else:  # E
+        mem_addr = instruction[8:]
+        flag=rf.get('111')
         if opcode == '01111':
-            pass
+            return False, conv_to_dec(mem_addr)
         elif opcode == '10000':
-            pass
+            if flag[-3]=='1':
+                return False, conv_to_dec(mem_addr)
         elif opcode == '10001':
-            pass
+            if flag[-2] == '1':
+                return False, conv_to_dec(mem_addr)
         elif opcode == '10010':
-            pass
+            if flag[-1] == '1':
+                return False, conv_to_dec(mem_addr)
 
     return False, -1
 
 
-def conv_to_bin(n):
+def conv_to_bin(n,l=8):
     b = bin(n)[2:]
-    return (8 - len(b)) * '0' + b
+    return (l - len(b)) * '0' + b
 
 
 def conv_to_dec(b):
