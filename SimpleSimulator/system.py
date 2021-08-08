@@ -1,4 +1,5 @@
 import sys
+import matplotlib.pyplot as plt
 
 
 class MEM:
@@ -140,6 +141,7 @@ def execute(instruction, a):
                 rf.set_flag('E')
 
     elif opcode in ['00100', '00101']:  # D
+        rf.reset_flag()
         r1 = instruction[5:8]
         mem_addr = instruction[8:]
         if opcode == '00100': # load
@@ -175,19 +177,27 @@ def conv_to_dec(b):
     return int(b, 2)
 
 
-def run(code):
+def run(code,scatter=False):
     mem = MEM(code)
     pc = PC()
     rf = RF()
+    addr=[]
     halted = False
     a = [mem, pc, rf]
     while not halted:
+        addr.append(pc.get())
         Instruction = mem.load(pc)
         halted, new_pc = execute(Instruction, a)
         pc.dump()
         rf.dump()
         pc.update(new_pc)
     mem.dump()
+    if scatter:
+        plt.scatter([i+1 for i in range(len(addr))],addr,s=[5 for i in addr],cmap='viridis')
+        # print(addr)
+        # plt.xticks([i for i in range(0,len(addr),1+len(addr)//10)])
+        plt.show()
+
 
 
 reg_codes = {'R0': '000', 'R1': '001', 'R2': '010', 'R3': '011', 'R4': '100', 'R5': '101',
