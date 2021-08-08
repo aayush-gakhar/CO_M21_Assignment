@@ -83,9 +83,10 @@ class PC:
 
 def execute(instruction, a):
     # return halted,new_pc(-1 if no jump)
-    if instruction == '1001100000000000':
-        return True, 0
     mem, pc, rf = a
+    if instruction == '1001100000000000':
+        rf.reset_flag()
+        return True, 0
     opcode = instruction[:5]
     if opcode in ['00000', '00001', '00110', '01010', '01011', '01100']:  # A
         rf.reset_flag()
@@ -117,11 +118,13 @@ def execute(instruction, a):
             rf.set(r1, (int(rf.get(r1), 2)<<imm)%2**16)
 
     elif opcode in ['00011', '00111', '01101', '01110']:  # C
-        rf.reset_flag()
+        if opcode!='00011':
+            rf.reset_flag()
         r1 = instruction[10:13]
         r2 = instruction[13:]
         if opcode == '00011': # move
             rf.set(r1,rf.get(r2))
+            rf.reset_flag()
         elif opcode == '00111': # divide
             rf.set('000', int(rf.get(r1), 2) / int(rf.get(r2), 2))
             rf.set('001', int(rf.get(r1), 2) % int(rf.get(r2), 2))
@@ -158,6 +161,7 @@ def execute(instruction, a):
         elif opcode == '10010':
             if flag[-1] == '1':
                 return False, conv_to_dec(mem_addr)
+        rf.reset_flag()
 
     return False, -1
 
