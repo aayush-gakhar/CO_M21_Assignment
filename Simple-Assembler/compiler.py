@@ -52,7 +52,7 @@ def compile_instruction(line):
 
 
 def conv_bin(n):
-    s = bin(int(n)).replace('0b', '')
+    s = bin(int(n))[2:]
     return (8 - len(s)) * '0' + s
 
 
