@@ -4,6 +4,18 @@ import sys
 def check(code):
     # return True if error in code !!!
 
+    # types of error -
+    # a. Typos in instruction name or register name
+    # b. Use of undefined variables
+    # c. Use of undefined labels
+    # d. Illegal use of FLAGS register
+    # e. Illegal Immediate values (less than 0 or more than 255)
+    # f. Misuse of labels as variables or vice-versa -> left
+    # g. Variables not declared at the begin ning
+    # h. Missing hlt instruction
+    # i. hlt not being used as the last instruction
+    # j. Wrong syntax used for instructions (For example, add instruction being used as a type B instruction )
+
     b = halt_check(code)  or iterate(code)
     x = [i for i in used if i not in labels]
     if x:
@@ -18,29 +30,35 @@ def iterate(code):
     for line_no, line in enumerate(code, start=1):
         # print(line)
         if not line:
+            #skipping  empty lines
             continue
         elif line[0] == 'var':
             if var_flag:
                 if variable_check(line, line_no):
                     return True
             else:
+                #making sure that the Variables are only declared in the beginning
                 raise_error(6, line_no)
                 return True
         elif line[0][-1] == ':':
             var_flag = False
+            # this covers both the nomenclature of labels and instruction check which follows the label.
             if label_check(line, line_no) or instruction_check(line[1:], line_no):
                 return True
             code[line_no-1]=line[1:]
         elif line[0] in Instructions:
+            #checks for errors in Instructions
             var_flag = False
             if instruction_check(line, line_no):
                 return True
         else:
+            #this covers all the errors where typo/gibberish written in the code
             raise_error(0, line_no)
             return True
 
 
 def variable_check(line, line_no):
+    # variable name typo
     b = len(line) != 2 or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in line[1].lower()) or line[
         1] in var
     var[line[1]] = ''
@@ -50,6 +68,7 @@ def variable_check(line, line_no):
 
 
 def instruction_check(line, line_no):
+    # instruction name typo error
     if line[0] not in Instructions:
         raise_error(0, line_no)
         return True
@@ -58,6 +77,7 @@ def instruction_check(line, line_no):
     if line[0] in ['add', 'sub', 'mul', 'xor', 'or', 'and']:
         if len(line) == 4:
             if all(i in reg for i in line[1:]):
+                # register name typo error
                 return False
             elif 'FLAGS' in line:
                 raise_error(3,line_no)
@@ -70,7 +90,7 @@ def instruction_check(line, line_no):
             return True
     elif line[0] == 'mov':
         if len(line) == 3:
-            if line[1] in reg:
+            if line[1] in reg:                      # register name typo error
                 if line[2] in reg or line[2] == 'FLAGS':
                     return False
                 elif line[2][0]=='$':
@@ -86,6 +106,7 @@ def instruction_check(line, line_no):
     elif line[0] in ['ld', 'st']:
         if len(line) == 3:
             if line[1] in reg and line[2] in var:
+                # register name typo error
                 return False
             elif line[2] not in var:
                 raise_error(1,line_no)
@@ -99,6 +120,7 @@ def instruction_check(line, line_no):
     elif line[0] in ['rs', 'ls']:
         if len(line) == 3:
             if line[1] in reg:
+                # register name typo error
                 return immediate_check(line[2], line_no)
             else:
                 raise_error(0,line_no,line[1])
@@ -108,6 +130,7 @@ def instruction_check(line, line_no):
     elif line[0] in ['div', 'not', 'cmp']:
         if len(line) == 3:
             if all(i in reg for i in line[1:]):
+                # register name typo error
                 return False
             elif 'FLAGS' in line:
                 raise_error(3, line_no)
@@ -160,7 +183,7 @@ def immediate_check(imm, line_no):
 def label_check(line, line_no):
     lname = line[0][:-1]
     b = line[0][-1] != ':' or any(
-        i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or len(lname) < 1
+        i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or len(lname) < 1 or lname in var
     labels[lname] = instruction_number[0]
     if b:
         raise_error(2, line_no)
