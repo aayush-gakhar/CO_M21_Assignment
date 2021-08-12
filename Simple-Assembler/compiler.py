@@ -7,9 +7,7 @@ def compile_(code, ins_no, l, v):
     global variables
     variables = v
     instruction_number[0] = ins_no
-    #i = 1
     for line in code:
-        #while(i<=256):
         if not line:
             continue
         elif line[0] == 'var':
@@ -18,7 +16,6 @@ def compile_(code, ins_no, l, v):
             compile_instruction(line)
         elif line[0][-1] == ':':
             compile_instruction(line[1:])
-            #i++
 
 
 def compile_variable(line):
