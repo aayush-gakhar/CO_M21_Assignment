@@ -75,7 +75,7 @@ def instruction_check(line, line_no):
     else:
         instruction_number[0] += 1
 
-    if line[0] in ['add', 'sub', 'mul', 'xor', 'or', 'and']: # a done
+    if line[0] in ['add', 'sub', 'mul', 'xor', 'or', 'and']:  # a done
         if len(line) == 4:
             if all(i in reg for i in line[1:]):
                 # register name typo error
@@ -90,7 +90,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
 
-    elif line[0] == 'mov': # b,c done
+    elif line[0] == 'mov':  # b,c done
         if len(line) == 3:
             if line[1] in reg:
                 if line[2] in reg or line[2] == 'FLAGS':
@@ -107,7 +107,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
 
-    elif line[0] in ['rs', 'ls']: # b done
+    elif line[0] in ['rs', 'ls']:  # b done
         if len(line) == 3:
             if line[1] in reg:
                 return immediate_check(line[2], line_no)
@@ -118,7 +118,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no, line)
             return True
 
-    elif line[0] in ['div', 'not', 'cmp']: # c done
+    elif line[0] in ['div', 'not', 'cmp']:  # c done
         if len(line) == 3:
             if all(i in reg for i in line[1:]):
                 return False
@@ -132,13 +132,13 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
 
-    elif line[0] in ['ld', 'st']: # d done
+    elif line[0] in ['ld', 'st']:  # d done
         if len(line) == 3:
             if line[1] in reg and line[2] in var:
                 return False
             elif line[2] not in var:
                 if line[2] in labels or used_labels:
-                    raise_error(5,line_no,line[2])
+                    raise_error(5, line_no, line[2])
                     return True
                 raise_error(1, line_no)
                 return True
@@ -149,7 +149,7 @@ def instruction_check(line, line_no):
             raise_error(9, line_no)
             return True
 
-    elif line[0] in ['jmp', 'jlt', 'jgt', 'je']: # e done
+    elif line[0] in ['jmp', 'jlt', 'jgt', 'je']:  # e done
         if len(line) == 2:
             if line[1] not in labels and line[1] not in used_labels:
                 if line[1] in var:
