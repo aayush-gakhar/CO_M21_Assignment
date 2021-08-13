@@ -23,7 +23,7 @@ def check(code):
         raise_error(2, used_labels[x[0]], x[0])
     if y:
         raise_error(11, 'No of instructions + variables exceed the memory size of 256')
-    return b or x or y, var, labels, instruction_number[0]
+    return b or x or y or error_flag[0], var, labels, instruction_number[0]
 
 
 def iterate(code):
@@ -223,12 +223,13 @@ def halt_check(code):
 
 
 def raise_error(error, line_no, s=''):
+    error_flag[0]=True
     sys.stdout.write('ERROR: ' + errors[error] + '; Line: ' + str(line_no) + (' ==>' if s else '') + s + '\n')
 
 
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
                 'jlt', 'jgt', 'je', 'hlt']
-error_flag = False
+error_flag = [False]
 errors = ['Typo Error', 'Undefined Variable Error', 'Undefined Label Error', 'Illegal Flag Use Error',
           'Illegal Immediate Error', 'Misuse of Var <--> Label Error', 'Var In Mid Error',
           'Missing Hlt Error', 'Hlt In Mid Error', 'Syntax Error', 'General Syntax Error', 'Memory overflow']  # 11
