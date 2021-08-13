@@ -4,7 +4,7 @@ import compiler
 
 
 def main():
-    # code = [i.split() for i in sys.stdin.readlines()]
+    code = [i.split() for i in sys.stdin.readlines()]
 
     try:
         # '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen'
