@@ -7,7 +7,7 @@ def main():
     # try:
     #     # path = '/Users/aayushgakhar/Desktop/test 2'
     #
-    #     path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/bin/hard/test1'
+    #     path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/bin/hard/test2'
     #     code = list(map(str.strip,open(path).readlines()))
     # except:
     #     try:

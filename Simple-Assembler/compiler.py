@@ -1,11 +1,11 @@
 import sys
 
 
-def compile_(code, ins_no, l, v):
+def compile_(code, ins_no, lab, var):
     global labels
-    labels = l
+    labels = lab
     global variables
-    variables = v
+    variables = var
     instruction_number[0] = ins_no
     for line in code:
         if not line:
@@ -35,13 +35,13 @@ def compile_instruction(line):
 
     elif line[0] in ['ld', 'st']:
         opcode = Instructions[line[0]]
-        sys.stdout.write(Instructions[line[0]]+Reg[line[1]]+variables[line[2]]+'\n')
+        sys.stdout.write(Instructions[line[0]] + Reg[line[1]] + variables[line[2]] + '\n')
 
     elif line[0] in ['jlt', 'jgt', 'jmp', 'je']:
         sys.stdout.write(Instructions[line[0]] + '000' + conv_bin(labels[line[1]]) + '\n')
 
     elif line[0] == 'hlt':
-        sys.stdout.write(Instructions[line[0]] + 11 * '0' )
+        sys.stdout.write(Instructions[line[0]] + 11 * '0')
 
     elif line[0] == 'mov':
         if line[2][0] == '$':
