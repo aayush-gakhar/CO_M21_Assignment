@@ -189,9 +189,8 @@ def immediate_check(imm, line_no):
 
 def label_check(line, line_no):
     lname = line[0][:-1]
-    b = line[0][-1] != ':' or any(
-        i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or lname in labels or len(
-        lname) < 1 or lname in var
+    b = (line[0][-1] != ':' or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or
+         lname in labels or len(lname) < 1 or lname in var)
     labels[lname] = instruction_number[0]
     if b:
         raise_error(2, line_no)
