@@ -40,22 +40,23 @@ class RF:
     def set(self, reg, val):
         if type(val) == int:
             if 0 <= val < 2 ** 16:
-                b = bin(val)[2:]
-                val = '0' * (16 - len(b)) + b
+                val=conv_to_bin(val,16)
             else:
                 val = '0000000000000000'
                 self.set_flag('V')
+        else:
+            val='0'*(16-len(val))+val
         self.REG[reg] = val
 
     def set_flag(self, s):
         if s == 'V':  # overflow
-            self.REG['111'] = '0000000000001000'
+            self.REG['111'] = '0'*12+'1000'
         elif s == 'L':  # less than
-            self.REG['111'] = '0000000000000100'
+            self.REG['111'] = '0'*12+'0100'
         elif s == 'G':  # greater than
-            self.REG['111'] = '0000000000000010'
+            self.REG['111'] = '0'*12+'0010'
         elif s == 'E':  # equal
-            self.REG['111'] = '0000000000000001'
+            self.REG['111'] = '0'*12+'0001'
 
     def reset_flag(self):
         self.REG['111'] = '0000000000000000'
@@ -102,15 +103,15 @@ def execute(instruction, a):
         elif opcode == '01010':  # XOR
             rf.set(r1, int(rf.get(r2), 2) ^ int(rf.get(r3), 2))
         elif opcode == '01011':  # or
-            rf.set(r1, int(rf.get(r2), 2) & int(rf.get(r3), 2))
-        elif opcode == '01100':  # and
             rf.set(r1, int(rf.get(r2), 2) | int(rf.get(r3), 2))
+        elif opcode == '01100':  # and
+            rf.set(r1, int(rf.get(r2), 2) & int(rf.get(r3), 2))
 
     elif opcode in ['00010', '01000', '01001']:  # B
         rf.reset_flag()
         r1 = instruction[5:8]
         imm = instruction[8:]
-        if opcode == '00010':  # move
+        if opcode == '00010':  # move imm
             rf.set(r1, '00000000' + imm)
         elif opcode == '01000':  # rs
             rf.set(r1, int(rf.get(r1), 2) >> imm)
@@ -122,7 +123,7 @@ def execute(instruction, a):
             rf.reset_flag()
         r1 = instruction[10:13]
         r2 = instruction[13:]
-        if opcode == '00011':  # move
+        if opcode == '00011':  # move reg
             rf.set(r1, rf.get(r2))
             rf.reset_flag()
         elif opcode == '00111':  # divide
