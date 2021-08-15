@@ -3,7 +3,7 @@ import system
 
 
 def main():
-    code = list(map(str.strip,sys.stdin.readlines()))
+    code = list(map(str.strip, sys.stdin.readlines()))
 
     # try:
     #     # path = '/Users/aayushgakhar/Desktop/test 2'

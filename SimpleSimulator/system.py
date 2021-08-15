@@ -40,23 +40,23 @@ class RF:
     def set(self, reg, val):
         if type(val) == int:
             if 0 <= val < 2 ** 16:
-                val=conv_to_bin(val,16)
+                val = conv_to_bin(val, 16)
             else:
                 val = '0000000000000000'
                 self.set_flag('V')
         else:
-            val='0'*(16-len(val))+val
+            val = '0' * (16 - len(val)) + val
         self.REG[reg] = val
 
     def set_flag(self, s):
         if s == 'V':  # overflow
-            self.REG['111'] = '0'*12+'1000'
+            self.REG['111'] = '0' * 12 + '1000'
         elif s == 'L':  # less than
-            self.REG['111'] = '0'*12+'0100'
+            self.REG['111'] = '0' * 12 + '0100'
         elif s == 'G':  # greater than
-            self.REG['111'] = '0'*12+'0010'
+            self.REG['111'] = '0' * 12 + '0010'
         elif s == 'E':  # equal
-            self.REG['111'] = '0'*12+'0001'
+            self.REG['111'] = '0' * 12 + '0001'
 
     def reset_flag(self):
         self.REG['111'] = '0000000000000000'
@@ -195,7 +195,6 @@ def run(code, scatter=False):
     if scatter:
         plt.scatter([i + 1 for i in range(len(addr))], addr, s=5, cmap='viridis')
         plt.show()
-
 
 # mem ==> 16bit
 # reg ==> 16bit
