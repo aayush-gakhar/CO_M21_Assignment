@@ -69,7 +69,7 @@ def variable_check(line, line_no):
 def instruction_check(line, line_no):
     # return true if error in Instruction
     # instruction name typo error
-    if line[0] not in Instructions:
+    if not line or line[0] not in Instructions:
         raise_error(0, line_no)
         return True
     else:
@@ -115,7 +115,7 @@ def instruction_check(line, line_no):
                 raise_error(0, line_no, line[1])
                 return True
         else:
-            raise_error(9, line_no, line)
+            raise_error(9, line_no)
             return True
 
     elif line[0] in ['div', 'not', 'cmp']:  # c done
@@ -189,11 +189,14 @@ def immediate_check(imm, line_no):
 
 def label_check(line, line_no):
     lname = line[0][:-1]
+    if lname in labels:
+        raise_error(2, line_no, 'label already used')
+        return True
     b = (line[0][-1] != ':' or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or
          lname in labels or len(lname) < 1 or lname in var)
     labels[lname] = instruction_number[0]
     if b:
-        raise_error(2, line_no)
+        raise_error(2, line_no, lname)
     return b
 
 
@@ -223,15 +226,17 @@ def halt_check(code):
 
 
 def raise_error(error, line_no, s=''):
-    error_flag[0]=True
-    sys.stdout.write('ERROR: ' + errors[error] + '; Line: ' + str(line_no) + (' ==>' if s else '') + s + '\n')
+    error_flag[0] = True
+    if type(s) != str:
+        s = ''
+    sys.stdout.write('ERROR: ' + errors[error] + ' >> Line: ' + str(line_no) + (' ==>' if s else '') + s + '\n')
 
 
 Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
                 'jlt', 'jgt', 'je', 'hlt']
 error_flag = [False]
 errors = ['Typo Error', 'Undefined Variable Error', 'Undefined Label Error', 'Illegal Flag Use Error',
-          'Illegal Immediate Error', 'Misuse of Var <--> Label Error', 'Var In Mid Error',
+          'Illegal Immediate Error', 'Misuse (Variable <--> Label) Error', 'Variable In Mid Error',
           'Missing Hlt Error', 'Hlt In Mid Error', 'Syntax Error', 'General Syntax Error', 'Memory overflow']  # 11
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
 var = {}

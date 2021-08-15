@@ -18,11 +18,13 @@ def main():
     #         code = [i.split() for i in
     #                 open('/CO/ass co/CO_M21_Assignment/automatedTesting/tests/assembly/errorGen/test1').readlines()]
     #     except:
-    #          path = 'C:/Users/hp/Documents/GitHub/assignment 1/automatedTesting/tests/assembly/errorGen/test3'
-    #          code = [i.split() for i in open(path).readlines()]
+    #         path = 'C:/Users/hp/Documents/GitHub/assignment 1/automatedTesting/tests/assembly/errorGen/test3'
+    #         code = [i.split() for i in open(path).readlines()]
 
     has_error, var, labels, instruction_number = error_detection.check(code)
-    if not has_error:
+    if has_error:
+        print('error')
+    else:
         compiler.compile_(code, instruction_number, labels, var)
 
 
