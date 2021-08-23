@@ -5,33 +5,42 @@ import matplotlib.pyplot as plt
 class MEM:
     def __init__(self, code):
         self.memory = code + ['0000000000000000'] * (256 - len(code))
-        self.traces = []
+        self.traces = ([], [])
+        self.traces_ldstr = ([], [])
 
     def dump(self):
         for i in self.memory:
             sys.stdout.write(i + '\n')
 
-    def load(self, ind):
+    def load(self, ind, cycle):
         if type(ind) == str:
             ind = conv_to_dec(ind)
-        if type(ind) != int:
-            self.traces.append(int(ind))
+        if type(ind) == int:
+            self.traces_ldstr[0].append(cycle)
+            self.traces_ldstr[1].append(ind)
+        else:
+            self.traces[0].append(cycle)
+            self.traces[1].append(int(ind))
         return self.memory[ind]
 
-    def store(self, ind, val):
+    def store(self, ind, val, cycle):
         if type(val) == int:
             val = conv_to_bin(val, 16)
         if type(ind) == str:
             ind = conv_to_dec(ind)
         self.memory[ind] = val
 
+        self.traces_ldstr[0].append(cycle)
+        self.traces_ldstr[1].append(ind)
+
     def show_traces(self):
-        plt.scatter([i + 1 for i in range(len(self.traces))], self.traces)
+        plt.scatter(self.traces[0], self.traces[1])
+        plt.scatter(self.traces_ldstr[0], self.traces_ldstr[1], color='red')
         plt.title('mem address v/s cycle')
         plt.xlabel('cycle')
         plt.ylabel('address')
-        plt.xlim(0)
-        plt.ylim(0)
+        # plt.xlim(0)
+        # plt.ylim(0)
         plt.show()
 
 
@@ -53,9 +62,13 @@ class RF:
         if type(val) == int:
             if 0 <= val < 2 ** 16:
                 val = conv_to_bin(val, 16)
-            else:
+            elif val < 0:
                 val = '0000000000000000'
                 self.set_flag('V')
+            else:
+                val = bin(val)[-16:]
+                self.set_flag('V')
+
         else:
             val = '0' * (16 - len(val)) + val
         self.REG[reg] = val
@@ -103,7 +116,7 @@ class EE:
         self.pc = pc
         self.rf = rf
 
-    def execute(self, instruction):
+    def execute(self, instruction, cycle):
         # return halted,new_pc(-1 if no jump)
         if instruction == '1001100000000000':
             self.rf.reset_flag()
@@ -165,9 +178,9 @@ class EE:
             r1 = instruction[5:8]
             mem_addr = instruction[8:]
             if opcode == '00100':  # load
-                self.rf.set(r1, self.mem.load(mem_addr))
+                self.rf.set(r1, self.mem.load(mem_addr),cycle)
             elif opcode == '00101':  # store
-                self.mem.store(mem_addr, self.rf.get(r1))
+                self.mem.store(mem_addr, self.rf.get(r1),cycle)
 
         else:  # E
             mem_addr = instruction[8:]
@@ -195,7 +208,6 @@ def conv_to_bin(n, l=8):
 
 def conv_to_dec(b):
     return int(b, 2)
-
 
 # mem ==> 16bit
 # reg ==> 16bit

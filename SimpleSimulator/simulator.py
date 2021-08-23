@@ -26,13 +26,15 @@ def run(code, scatter=False):
     pc = system.PC(0)
     rf = system.RF()
     ee = system.EE(mem, pc, rf)
+    cycle=0
     halted = False
     while not halted:
-        Instruction = mem.load(pc)
-        halted, new_pc = ee.execute(Instruction)
+        Instruction = mem.load(pc, cycle)
+        halted, new_pc = ee.execute(Instruction, cycle)
         pc.dump()
         rf.dump()
         pc.update(new_pc)
+        cycle+=1
     mem.dump()
     if scatter:
         mem.show_traces()
