@@ -14,7 +14,7 @@ class MEM:
 
     def load(self, ind, cycle):
         if type(ind) == str:
-            ind = conv_to_dec(ind)
+            ind = int(ind, 2)
         if type(ind) == int:
             self.traces_ldstr[0].append(cycle)
             self.traces_ldstr[1].append(ind)
@@ -27,7 +27,7 @@ class MEM:
         if type(val) == int:
             val = conv_to_bin(val, 16)
         if type(ind) == str:
-            ind = conv_to_dec(ind)
+            ind = int(ind, 2)
         self.memory[ind] = val
 
         self.traces_ldstr[0].append(cycle)
@@ -178,32 +178,32 @@ class EE:
             r1 = instruction[5:8]
             mem_addr = instruction[8:]
             if opcode == '00100':  # load
-                self.rf.set(r1, self.mem.load(mem_addr),cycle)
+                self.rf.set(r1, self.mem.load(mem_addr), cycle)
             elif opcode == '00101':  # store
-                self.mem.store(mem_addr, self.rf.get(r1),cycle)
+                self.mem.store(mem_addr, self.rf.get(r1), cycle)
 
         else:  # E
             mem_addr = instruction[8:]
             flag = self.rf.get('111')
             if opcode == '01111':
-                return False, conv_to_dec(mem_addr)
+                return False, int(mem_addr, 2)
             elif opcode == '10000':
                 if flag[-3] == '1':
-                    return False, conv_to_dec(mem_addr)
+                    return False, int(mem_addr, 2)
             elif opcode == '10001':
                 if flag[-2] == '1':
-                    return False, conv_to_dec(mem_addr)
+                    return False, int(mem_addr, 2)
             elif opcode == '10010':
                 if flag[-1] == '1':
-                    return False, conv_to_dec(mem_addr)
+                    return False, int(mem_addr, 2)
             self.rf.reset_flag()
 
         return False, -1
 
 
-def conv_to_bin(n, l=8):
+def conv_to_bin(n, length=8):
     b = bin(n)[2:]
-    return (l - len(b)) * '0' + b
+    return (length - len(b)) * '0' + b
 
 
 def conv_to_dec(b):

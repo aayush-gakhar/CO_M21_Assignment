@@ -18,7 +18,7 @@ def main():
     #         path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/bin/simple/test1'
     #         code = list(map(str.strip, open(path).readlines()))
 
-    run(code,True)
+    run(code)
 
 
 def run(code, scatter=False):
@@ -26,7 +26,7 @@ def run(code, scatter=False):
     pc = system.PC(0)
     rf = system.RF()
     ee = system.EE(mem, pc, rf)
-    cycle=0
+    cycle = 0
     halted = False
     while not halted:
         Instruction = mem.load(pc, cycle)
@@ -34,7 +34,7 @@ def run(code, scatter=False):
         pc.dump()
         rf.dump()
         pc.update(new_pc)
-        cycle+=1
+        cycle += 1
     mem.dump()
     if scatter:
         mem.show_traces()
