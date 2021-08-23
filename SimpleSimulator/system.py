@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 class MEM:
     def __init__(self, code):
         self.memory = code + ['0000000000000000'] * (256 - len(code))
+        self.traces = []
 
     def dump(self):
         for i in self.memory:
@@ -13,6 +14,8 @@ class MEM:
     def load(self, ind):
         if type(ind) == str:
             ind = conv_to_dec(ind)
+        if type(ind) != int:
+            self.traces.append(int(ind))
         return self.memory[ind]
 
     def store(self, ind, val):
@@ -21,6 +24,15 @@ class MEM:
         if type(ind) == str:
             ind = conv_to_dec(ind)
         self.memory[ind] = val
+
+    def show_traces(self):
+        plt.scatter([i + 1 for i in range(len(self.traces))], self.traces)
+        plt.title('mem address v/s cycle')
+        plt.xlabel('cycle')
+        plt.ylabel('address')
+        plt.xlim(0)
+        plt.ylim(0)
+        plt.show()
 
 
 class RF:
@@ -63,10 +75,13 @@ class RF:
 
 
 class PC:
-    def __init__(self):
-        self.pc = 0
+    def __init__(self, n):
+        self.pc = n
 
     def __index__(self):
+        return self.pc
+
+    def __int__(self):
         return self.pc
 
     def dump(self):
@@ -82,90 +97,95 @@ class PC:
             self.pc = new_pc
 
 
-def execute(instruction, a):
-    # return halted,new_pc(-1 if no jump)
-    mem, pc, rf = a
-    if instruction == '1001100000000000':
-        rf.reset_flag()
-        return True, 0
-    opcode = instruction[:5]
-    if opcode in ['00000', '00001', '00110', '01010', '01011', '01100']:  # A
-        rf.reset_flag()
-        r1 = instruction[7:10]
-        r2 = instruction[10:13]
-        r3 = instruction[13:]
-        if opcode == '00000':  # addition
-            rf.set(r1, int(rf.get(r2), 2) + int(rf.get(r3), 2))
-        elif opcode == '00001':  # substraction
-            rf.set(r1, int(rf.get(r2), 2) - int(rf.get(r3), 2))
-        elif opcode == '00110':  # multiply
-            rf.set(r1, int(rf.get(r2), 2) * int(rf.get(r3), 2))
-        elif opcode == '01010':  # XOR
-            rf.set(r1, int(rf.get(r2), 2) ^ int(rf.get(r3), 2))
-        elif opcode == '01011':  # or
-            rf.set(r1, int(rf.get(r2), 2) | int(rf.get(r3), 2))
-        elif opcode == '01100':  # and
-            rf.set(r1, int(rf.get(r2), 2) & int(rf.get(r3), 2))
+class EE:
+    def __init__(self, mem, pc, rf):
+        self.mem = mem
+        self.pc = pc
+        self.rf = rf
 
-    elif opcode in ['00010', '01000', '01001']:  # B
-        rf.reset_flag()
-        r1 = instruction[5:8]
-        imm = instruction[8:]
-        if opcode == '00010':  # move imm
-            rf.set(r1, '00000000' + imm)
-        elif opcode == '01000':  # rs
-            rf.set(r1, int(rf.get(r1), 2) >> imm)
-        elif opcode == '01001':  # ls
-            rf.set(r1, (int(rf.get(r1), 2) << imm) % 2 ** 16)
+    def execute(self, instruction):
+        # return halted,new_pc(-1 if no jump)
+        if instruction == '1001100000000000':
+            self.rf.reset_flag()
+            return True, 0
+        opcode = instruction[:5]
+        if opcode in ['00000', '00001', '00110', '01010', '01011', '01100']:  # A
+            self.rf.reset_flag()
+            r1 = instruction[7:10]
+            r2 = instruction[10:13]
+            r3 = instruction[13:]
+            if opcode == '00000':  # addition
+                self.rf.set(r1, int(self.rf.get(r2), 2) + int(self.rf.get(r3), 2))
+            elif opcode == '00001':  # substraction
+                self.rf.set(r1, int(self.rf.get(r2), 2) - int(self.rf.get(r3), 2))
+            elif opcode == '00110':  # multiply
+                self.rf.set(r1, int(self.rf.get(r2), 2) * int(self.rf.get(r3), 2))
+            elif opcode == '01010':  # XOR
+                self.rf.set(r1, int(self.rf.get(r2), 2) ^ int(self.rf.get(r3), 2))
+            elif opcode == '01011':  # or
+                self.rf.set(r1, int(self.rf.get(r2), 2) | int(self.rf.get(r3), 2))
+            elif opcode == '01100':  # and
+                self.rf.set(r1, int(self.rf.get(r2), 2) & int(self.rf.get(r3), 2))
 
-    elif opcode in ['00011', '00111', '01101', '01110']:  # C
-        if opcode != '00011':
-            rf.reset_flag()
-        r1 = instruction[10:13]
-        r2 = instruction[13:]
-        if opcode == '00011':  # move reg
-            rf.set(r1, rf.get(r2))
-            rf.reset_flag()
-        elif opcode == '00111':  # divide
-            rf.set('000', int(rf.get(r1), 2) / int(rf.get(r2), 2))
-            rf.set('001', int(rf.get(r1), 2) % int(rf.get(r2), 2))
-        elif opcode == '01101':  # invert
-            rf.set(r1, ''.join('1' if i == '0' else '0' for i in rf.get(r2)))
-        elif opcode == '01110':  # compare
-            a, b = int(rf.get(r1), 2), int(rf.get(r2), 2)
-            if a < b:
-                rf.set_flag('L')
-            elif a > b:
-                rf.set_flag('G')
-            else:
-                rf.set_flag('E')
+        elif opcode in ['00010', '01000', '01001']:  # B
+            self.rf.reset_flag()
+            r1 = instruction[5:8]
+            imm = instruction[8:]
+            if opcode == '00010':  # move imm
+                self.rf.set(r1, '00000000' + imm)
+            elif opcode == '01000':  # rs
+                self.rf.set(r1, int(self.rf.get(r1), 2) >> imm)
+            elif opcode == '01001':  # ls
+                self.rf.set(r1, (int(self.rf.get(r1), 2) << imm) % 2 ** 16)
 
-    elif opcode in ['00100', '00101']:  # D
-        rf.reset_flag()
-        r1 = instruction[5:8]
-        mem_addr = instruction[8:]
-        if opcode == '00100':  # load
-            rf.set(r1, mem.load(mem_addr))
-        elif opcode == '00101':  # store
-            mem.store(mem_addr, rf.get(r1))
+        elif opcode in ['00011', '00111', '01101', '01110']:  # C
+            if opcode != '00011':
+                self.rf.reset_flag()
+            r1 = instruction[10:13]
+            r2 = instruction[13:]
+            if opcode == '00011':  # move reg
+                self.rf.set(r1, self.rf.get(r2))
+                self.rf.reset_flag()
+            elif opcode == '00111':  # divide
+                self.rf.set('000', int(self.rf.get(r1), 2) / int(self.rf.get(r2), 2))
+                self.rf.set('001', int(self.rf.get(r1), 2) % int(self.rf.get(r2), 2))
+            elif opcode == '01101':  # invert
+                self.rf.set(r1, ''.join('1' if i == '0' else '0' for i in self.rf.get(r2)))
+            elif opcode == '01110':  # compare
+                a, b = int(self.rf.get(r1), 2), int(self.rf.get(r2), 2)
+                if a < b:
+                    self.rf.set_flag('L')
+                elif a > b:
+                    self.rf.set_flag('G')
+                else:
+                    self.rf.set_flag('E')
 
-    else:  # E
-        mem_addr = instruction[8:]
-        flag = rf.get('111')
-        if opcode == '01111':
-            return False, conv_to_dec(mem_addr)
-        elif opcode == '10000':
-            if flag[-3] == '1':
+        elif opcode in ['00100', '00101']:  # D
+            self.rf.reset_flag()
+            r1 = instruction[5:8]
+            mem_addr = instruction[8:]
+            if opcode == '00100':  # load
+                self.rf.set(r1, self.mem.load(mem_addr))
+            elif opcode == '00101':  # store
+                self.mem.store(mem_addr, self.rf.get(r1))
+
+        else:  # E
+            mem_addr = instruction[8:]
+            flag = self.rf.get('111')
+            if opcode == '01111':
                 return False, conv_to_dec(mem_addr)
-        elif opcode == '10001':
-            if flag[-2] == '1':
-                return False, conv_to_dec(mem_addr)
-        elif opcode == '10010':
-            if flag[-1] == '1':
-                return False, conv_to_dec(mem_addr)
-        rf.reset_flag()
+            elif opcode == '10000':
+                if flag[-3] == '1':
+                    return False, conv_to_dec(mem_addr)
+            elif opcode == '10001':
+                if flag[-2] == '1':
+                    return False, conv_to_dec(mem_addr)
+            elif opcode == '10010':
+                if flag[-1] == '1':
+                    return False, conv_to_dec(mem_addr)
+            self.rf.reset_flag()
 
-    return False, -1
+        return False, -1
 
 
 def conv_to_bin(n, l=8):
@@ -176,25 +196,6 @@ def conv_to_bin(n, l=8):
 def conv_to_dec(b):
     return int(b, 2)
 
-
-def run(code, scatter=False):
-    mem = MEM(code)
-    pc = PC()
-    rf = RF()
-    addr = []
-    halted = False
-    a = [mem, pc, rf]
-    while not halted:
-        addr.append(pc.get())
-        Instruction = mem.load(pc)
-        halted, new_pc = execute(Instruction, a)
-        pc.dump()
-        rf.dump()
-        pc.update(new_pc)
-    mem.dump()
-    if scatter:
-        plt.scatter([i + 1 for i in range(len(addr))], addr, s=5, cmap='viridis')
-        plt.show()
 
 # mem ==> 16bit
 # reg ==> 16bit
