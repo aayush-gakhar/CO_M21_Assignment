@@ -18,10 +18,10 @@ def main():
     #         path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/bin/simple/test1'
     #         code = list(map(str.strip, open(path).readlines()))
 
-    run(code,True)
+    run(code,True,True)
 
 
-def run(code, scatter=False):
+def run(code, scatter=False, save = False):
     mem = system.MEM(code)
     pc = system.PC(0)
     rf = system.RF()
@@ -37,7 +37,7 @@ def run(code, scatter=False):
         cycle += 1
     mem.dump()
     if scatter:
-        mem.show_traces()
+        mem.show_traces(save)
 
 
 main()

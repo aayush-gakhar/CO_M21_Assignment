@@ -33,7 +33,7 @@ class MEM:
         self.traces_ldstr[0].append(cycle)
         self.traces_ldstr[1].append(ind)
 
-    def show_traces(self):
+    def show_traces(self,save=False):
         plt.scatter(self.traces[0], self.traces[1])
         plt.scatter(self.traces_ldstr[0], self.traces_ldstr[1], color='red')
         plt.title('mem address v/s cycle')
@@ -41,8 +41,10 @@ class MEM:
         plt.ylabel('address')
         # plt.xlim(0)
         # plt.ylim(0)
-        # plt.show()
-        plt.savefig("CO_Assignment")
+        if save:
+            plt.savefig("CO_Assignment")
+        else:
+            plt.show()
 
 
 class RF:
