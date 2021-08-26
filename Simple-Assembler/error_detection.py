@@ -58,12 +58,20 @@ def iterate(code):
 
 def variable_check(line, line_no):
     # return true if error in var declaration
-    b = len(line) != 2 or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in line[1].lower()) or line[
-        1] in var
-    var[line[1]] = ''
-    if b:
+    if len(line) != 2:
+        raise_error(9, line_no, 'missing variable')
+        return True
+    if line[1] in var:
         raise_error(1, line_no)
-    return b
+        return True
+    if line[1] in illegal_terms:
+        raise_error(12, line_no, line[1] + ' this cant be used as variable name')
+        return True
+    if any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in line[1].lower()):
+        raise_error(0, line_no, line[1] + ' variable name not supported')
+        return True
+    var[line[1]] = ''
+    return False
 
 
 def instruction_check(line, line_no):
@@ -101,6 +109,9 @@ def instruction_check(line, line_no):
                     raise_error(0, line_no)
                     return True
             else:
+                if line[1] == 'FLAGS':
+                    raise_error(3, line_no)
+                    return True
                 raise_error(0, line_no, line[1])
                 return True
         else:
@@ -188,16 +199,24 @@ def immediate_check(imm, line_no):
 
 
 def label_check(line, line_no):
+    if len(line) <2:
+        raise_error(2, line_no, 'missing instruction')
+        return True
     lname = line[0][:-1]
     if lname in labels:
         raise_error(2, line_no, 'label already used')
         return True
-    b = (line[0][-1] != ':' or any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()) or
-         lname in labels or len(lname) < 1 or lname in var)
-    labels[lname] = instruction_number[0]
-    if b:
+    if line[0][-1] != ':' or lname in labels or len(lname) < 1 or lname in var:
         raise_error(2, line_no, lname)
-    return b
+        return True
+    if lname in illegal_terms:
+        raise_error(12, line_no, lname + ' this cant be used as label name')
+        return True
+    labels[lname] = instruction_number[0]
+    if any(i not in '_0123456789abcdefghijklmnopqrstuvwxyz' for i in lname.lower()):
+        raise_error(0, line_no, lname + ' Label name not supported')
+        return True
+    return False
 
 
 def halt_check(code):
@@ -237,8 +256,11 @@ Instructions = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor'
 error_flag = [False]
 errors = ['Typo Error', 'Undefined Variable Error', 'Undefined Label Error', 'Illegal Flag Use Error',
           'Illegal Immediate Error', 'Misuse (Variable <--> Label) Error', 'Variable In Mid Error',
-          'Missing Hlt Error', 'Hlt In Mid Error', 'Syntax Error', 'General Syntax Error', 'Memory overflow']  # 11
+          'Missing Hlt Error', 'Hlt In Mid Error', 'Syntax Error', 'General Syntax Error', 'Memory overflow',
+          'Illegal term']  # 12
 reg = ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6']
+illegal_terms = ['add', 'sub', 'mov', 'ld', 'st', 'mul', 'div', 'rs', 'ls', 'xor', 'or', 'and', 'not', 'cmp', 'jmp',
+                 'jlt', 'jgt', 'je', 'hlt', 'R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'FLAGS', 'var']
 var = {}
 labels = {}
 used_labels = {}
