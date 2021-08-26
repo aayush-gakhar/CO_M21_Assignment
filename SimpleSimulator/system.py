@@ -150,9 +150,9 @@ class EE:
             if opcode == '00010':  # move imm
                 self.rf.set(r1, '00000000' + imm)
             elif opcode == '01000':  # rs
-                self.rf.set(r1, int(self.rf.get(r1), 2) >> imm)
+                self.rf.set(r1, int(self.rf.get(r1), 2) >> int(imm, 2))
             elif opcode == '01001':  # ls
-                self.rf.set(r1, (int(self.rf.get(r1), 2) << imm) % 2 ** 16)
+                self.rf.set(r1, (int(self.rf.get(r1), 2) << int(imm, 2)) % 2 ** 16)
 
         elif opcode in ['00011', '00111', '01101', '01110']:  # C
             if opcode != '00011':
@@ -188,6 +188,7 @@ class EE:
         else:  # E
             mem_addr = instruction[8:]
             flag = self.rf.get('111')
+            self.rf.reset_flag()
             if opcode == '01111':
                 return False, int(mem_addr, 2)
             elif opcode == '10000':
