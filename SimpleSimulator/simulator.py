@@ -18,7 +18,7 @@ def main():
     #         path = '/Users/aayushgakhar/Documents/GitHub/CO_M21_Assignment/automatedTesting/tests/bin/simple/test1'
     #         code = list(map(str.strip, open(path).readlines()))
 
-    run(code)
+    run(code,True)
 
 
 def run(code, scatter=False):

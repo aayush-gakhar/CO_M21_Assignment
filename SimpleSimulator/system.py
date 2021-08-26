@@ -41,7 +41,8 @@ class MEM:
         plt.ylabel('address')
         # plt.xlim(0)
         # plt.ylim(0)
-        plt.show()
+        # plt.show()
+        plt.savefig("CO_Assignment")
 
 
 class RF:
