@@ -163,7 +163,7 @@ class EE:
                 self.rf.set(r1, self.rf.get(r2))
                 self.rf.reset_flag()
             elif opcode == '00111':  # divide
-                self.rf.set('000', int(self.rf.get(r1), 2) / int(self.rf.get(r2), 2))
+                self.rf.set('000', int(self.rf.get(r1), 2) // int(self.rf.get(r2), 2))
                 self.rf.set('001', int(self.rf.get(r1), 2) % int(self.rf.get(r2), 2))
             elif opcode == '01101':  # invert
                 self.rf.set(r1, ''.join('1' if i == '0' else '0' for i in self.rf.get(r2)))
