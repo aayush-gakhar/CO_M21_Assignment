@@ -181,7 +181,7 @@ class EE:
             r1 = instruction[5:8]
             mem_addr = instruction[8:]
             if opcode == '00100':  # load
-                self.rf.set(r1, self.mem.load(mem_addr), cycle)
+                self.rf.set(r1, self.mem.load(mem_addr, cycle))
             elif opcode == '00101':  # store
                 self.mem.store(mem_addr, self.rf.get(r1), cycle)
 
