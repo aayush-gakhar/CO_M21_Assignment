@@ -1,4 +1,5 @@
-# CO M21 Assignment
+# Simple-risc-assembler-and-simulator
+
 Starter repository for Computer Organization, Monsoon 2021 semester, assignment at IIITD
 
 ## Adding code
